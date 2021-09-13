@@ -3,10 +3,33 @@
 
 #include "pch.h"
 #include <iostream>
+#include "laba_of_ci.h"
+
+using namespace std;
+
+struct PIPE
+{
+	int id;
+	double length;
+};
+
+void OutputLength(PIPE& pipe)
+{
+	cout << "Length = " << pipe.length;
+}
+
+void InputLength(PIPE& pipe)
+{
+	cout << "How long is the pipe? Please enter a number without spaces:" << endl;
+	cin >> pipe.length;
+}
 
 int main()
 {
-    std::cout << "Hello World!\n";
+	PIPE pipe;
+	pipe.id = 0;
+	InputLength(pipe);
+	OutputLength(pipe);
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
