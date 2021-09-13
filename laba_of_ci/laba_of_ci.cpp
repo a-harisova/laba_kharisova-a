@@ -3,7 +3,6 @@
 
 #include "pch.h"
 #include <iostream>
-#include "laba_of_ci.h"
 
 using namespace std;
 
@@ -13,23 +12,25 @@ struct PIPE
 	double length;
 };
 
-void OutputLength(PIPE& pipe)
+void Output(PIPE& pipe)
 {
 	cout << "Length = " << pipe.length;
 }
 
-void InputLength(PIPE& pipe)
+PIPE NewPipe()
 {
-	cout << "How long is the pipe? Please enter a number without spaces:" << endl;
+	PIPE pipe;
+	pipe.id = 0;
+	cout << "How long is the pipe? Please enter a number without spaces:\n" << endl;
 	cin >> pipe.length;
+	return pipe;
 }
 
 int main()
 {
-	PIPE pipe;
-	pipe.id = 0;
-	InputLength(pipe);
-	OutputLength(pipe);
+	PIPE pipe = NewPipe();
+
+	Output(pipe);
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
