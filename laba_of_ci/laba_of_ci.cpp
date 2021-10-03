@@ -3,6 +3,7 @@
 
 #include "pch.h"
 #include <iostream>
+#include <string>
 
 using namespace std;
 
@@ -10,6 +11,17 @@ struct PIPE
 {
 	int id;
 	double length;
+	double diameter;
+	string repair;
+};
+
+struct KS
+{
+	int id;
+	string name;
+	int number_of_workshops;
+	int number_of_working_workshops;
+	double efficiency;
 };
 
 void Output(PIPE& pipe)
@@ -29,7 +41,6 @@ PIPE NewPipe()
 int main()
 {
 	PIPE pipe = NewPipe();
-
 	Output(pipe);
 }
 
