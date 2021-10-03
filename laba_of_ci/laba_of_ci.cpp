@@ -23,12 +23,21 @@ struct KS
 	double efficiency;
 };
 
-void Output(PIPE& pipe)
+void Output_Pipe(PIPE& pipe)
 {
 	cout << "ID = " << pipe.id;
 	cout << "Length = " << pipe.length;
 	cout << "Diameter = " << pipe.diameter;
 	cout << "Indicator under repair = " << pipe.repair;
+}
+
+void Output_KS(KS& ks)
+{
+	cout << "ID = " << ks.id;
+	cout << "Name = " << ks.name;
+	cout << "The number of workshops of the compressor station = " << ks.number_of_workshops;
+	cout << "The number of workshops of the compressor station, that are currently operating = " << ks.number_of_working_workshops;
+	cout << "Efficiency, % = " << ks.efficiency;
 }
 
 PIPE Input_Pipe()
@@ -61,7 +70,8 @@ int main()
 {
 	PIPE pipe = Input_Pipe();
 	KS ks = Input_KS();
-	Output(pipe);
+	Output_Pipe(pipe);
+	Output_KS(ks);
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
