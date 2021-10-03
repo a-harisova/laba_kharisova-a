@@ -1,5 +1,4 @@
 ﻿// laba_c++.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
 
 #include "pch.h"
 #include <iostream>
@@ -26,21 +25,42 @@ struct KS
 
 void Output(PIPE& pipe)
 {
+	cout << "ID = " << pipe.id;
 	cout << "Length = " << pipe.length;
+	cout << "Diameter = " << pipe.diameter;
+	cout << "Indicator under repair = " << pipe.repair;
 }
 
-PIPE NewPipe()
+PIPE Input_Pipe()
 {
 	PIPE pipe;
 	pipe.id = 0;
-	cout << "How long is the pipe? Please enter a number without spaces:\n" << endl;
+	cout << "How long is the pipe? Please enter a number without spaces: ";
 	cin >> pipe.length;
+	cout << "What is the diameter of the pipe? Please enter a number: ";
+	cin >> pipe.diameter;
+	pipe.repair = 'no';
 	return pipe;
+}
+
+KS Input_KS()
+{
+	KS ks;
+	ks.id = 0;
+	cout << "Please enter the name of compressor station: ";
+	cin >> ks.name;
+	cout << "Please enter the number of workshops of the compressor station: ";
+	cin >> ks.number_of_workshops;
+	cout << "Please enter the number of workshops of the compressor station, that are currently operating: ";
+	cin >> ks.number_of_working_workshops;
+	ks.efficiency = 80;
+	return ks;
 }
 
 int main()
 {
-	PIPE pipe = NewPipe();
+	PIPE pipe = Input_Pipe();
+	KS ks = Input_KS();
 	Output(pipe);
 }
 
