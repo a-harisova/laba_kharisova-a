@@ -1,0 +1,5 @@
+PIPE INFORMATION:
+ID = -858993460
+Length = -9.25596e+61
+Diameter = -9.25596e+61
+Indicator under repair = 
