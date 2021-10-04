@@ -23,6 +23,19 @@ struct KS
 	double efficiency;
 };
 
+void PrintMenu()
+{
+	cout << "1. Input pipe" << endl
+		 << "2. Input KS" << endl
+		 << "3. Print all objects" << endl
+		 << "4. Edit pipe" << endl
+		 << "5. Edit KS" << endl
+		 << "6. Save" << endl
+		 << "7. Dowlonad" << endl
+		 << "0. Exit" << endl
+		 << "Choose an action? please: ";
+}
+
 void Output_Pipe(const PIPE& pipe)
 {
 	cout << "PIPE INFORMATION: " << endl;
@@ -41,8 +54,6 @@ void Output_KS(const KS& ks)
 	cout << "The number of workshops of the compressor station, that are currently operating = " << ks.number_of_working_workshops << endl;
 	cout << "Efficiency, % = " << ks.efficiency << endl;
 }
-
-
 
 PIPE Input_Pipe()
 {
@@ -123,14 +134,74 @@ void Output_In_File_KS(const KS& ks)
 	fout.close();
 }
 
+void Input_In_File_Pipe(PIPE& pipe)
+{
+	ofstream fout;
+	fout.open("Pipe.txt");
+
+}
+
 int main()
 {
-	PIPE pipe = Input_Pipe();
-	KS ks = Input_KS();
-	Output_Pipe(pipe);
-	Output_KS(ks);
-	Output_In_File_Pipe(pipe);
-	Output_In_File_KS(ks);
+	PIPE pipe;
+	KS ks;
+	while (1)
+	{
+		PrintMenu();
+		int i;
+		cin >> i;
+		switch (i)
+		{
+			case 1:
+			{
+				system("cls");
+				pipe = Input_Pipe();
+				break;
+			}
+			case 2:
+			{
+				system("cls");
+				ks = Input_KS();
+				break;
+			}
+			case 3: 
+			{
+				system("cls");
+				Output_Pipe(pipe);
+				Output_KS(ks);
+				break;
+			}
+			case 4:
+			{
+				system("cls");
+					
+				break;
+			}
+			case 5:
+			{
+				system("cls");
+
+				break;
+			}
+			case 6:
+			{
+				system("cls");
+				Output_In_File_Pipe(pipe);
+				Output_In_File_KS(ks);
+				break;
+			}
+			case 7:
+			{
+				system("cls");
+
+				break;
+			}
+			case 0:
+			{
+				return 0;
+			}
+		}
+	}
 	return 0;
 }
 
