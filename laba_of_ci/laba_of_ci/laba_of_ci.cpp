@@ -11,7 +11,7 @@ struct PIPE
 	int id = 0;
 	double length = 0;
 	double diameter = 0;
-	string repair;
+	string repair = "no";
 };
 
 struct KS
@@ -48,7 +48,7 @@ void Output_Pipe(const PIPE& pipe)
 		cout << "ID = " << pipe.id << endl;
 		cout << "Length = " << pipe.length << endl;
 		cout << "Diameter = " << pipe.diameter << endl;
-		cout << "Indicator under repair = " << pipe.repair << endl;
+		cout << "Repairs needed - " << pipe.repair << endl;
 	}
 }
 
@@ -79,7 +79,7 @@ double Check_Number()
 		if (cin.fail())
 		{
 			cin.clear();
-			cin.ignore(32767, '\n');
+			cin.ignore(10000, '\n');
 			cout << "Please, enter correct data: ";
 		}
 		else return value;
@@ -124,16 +124,15 @@ void Output_In_File_Pipe(const PIPE& pipe)
 		}
 		else 
 		{
-			fout << "No pipe information, fill in the data an try again." << endl;
+			cout << "No pipe information, fill in the data an try again." << endl;
 		}
 	}
 	else
 	{
-		fout << "PIPE INFORMATION:" << endl;
-		fout << "ID = " << pipe.id << endl;
-		fout << "Length = " << pipe.length << endl;
-		fout << "Diameter = " << pipe.diameter << endl;
-		fout << "Indicator under repair = " << pipe.repair << endl;
+		fout << pipe.id << endl;
+		fout << pipe.length << endl;
+		fout << pipe.diameter << endl;
+		fout << pipe.repair << endl;
 	}
 	fout.close();
 }
@@ -150,46 +149,55 @@ void Output_In_File_KS(const KS& ks)
 		}
 		else
 		{
-			fout << "No KS information, fill in the data an try again." << endl;
+			cout << "No KS information, fill in the data an try again." << endl;
 		}
 	}
 	else
 	{
-		fout << "KS INFORMATION:" << endl;
-		fout << "ID = " << ks.id << endl;
-		fout << "Nime = " << ks.name << endl;
-		fout << "Number of workshops = " << ks.number_of_workshops << endl;
-		fout << "Number of working workshops = " << ks.number_of_working_workshops << endl;
-		fout << "Efficiency, % = " << ks.efficiency << endl;
+		fout << ks.id << endl;
+		fout << ks.name << endl;
+		fout << ks.number_of_workshops << endl;
+		fout << ks.number_of_working_workshops << endl;
+		fout << ks.efficiency << endl;
 	}
 	fout.close();
 }
 
-void Input_In_File_Pipe(const PIPE& pipe)
+PIPE Input_From_File_Pipe(PIPE& pipe)
 {
-	ofstream fout;
-	fout.open("Pipe.txt");
-	fout << pipe.id << endl;
-	fout << pipe.length << endl;
-	fout << pipe.diameter << endl;
-	fout << pipe.repair << endl;
-	fout.close();
+	ifstream fin;
+	fin.open("PIPE.txt");
+	fin >> pipe.id;
+	fin >> pipe.length;
+	fin >> pipe.diameter;
+	fin >> pipe.repair;
+	fin.close();
+	return pipe;
 }
 
-void Input_In_File_KS(const KS& ks)
+KS Input_From_File_KS(KS& ks)
 {
-	ofstream fout;
-	fout.open("KS.txt");
-	fout << ks.id << endl;
-	fout << ks.name << endl;
-	fout << ks.number_of_workshops << endl;
-	fout << ks.number_of_working_workshops << endl;
-	fout.close();
+	ifstream fin;
+	fin.open("KS.txt");
+	fin >> ks.id;
+	fin >> ks.name;
+	fin >> ks.number_of_workshops;
+	fin >> ks.number_of_working_workshops;
+	fin >> ks.efficiency;
+	fin.close();
+	return ks;
 }
 
 void Edit_Pipe(PIPE& pipe)
 {
-	pipe.repair = (!pipe.repair);
+	if (pipe.repair == "no")
+	{
+		pipe.repair = "yes";
+	}
+	else
+	{
+		pipe.repair = "no";
+	}
 }
 void Edit_KS(KS& ks)
 {
@@ -198,7 +206,8 @@ void Edit_KS(KS& ks)
 	cout << "Enter 1 if you want to create a new workshop." << endl;
 	cout << "Enter 2 if you want to start an existing workshop." << endl;
 	cout << "Enter 3 if you want to stop an existing workshop." << endl;
-	cout << "Enter 1 or 2 or 3 :" << choice << endl;
+	cout << "Enter 1 or 2 or 3: ";
+	cin >> choice;
 	if (choice == 1)
 	{
 		ks.number_of_workshops++;
@@ -207,7 +216,7 @@ void Edit_KS(KS& ks)
 	{
 		if (ks.number_of_workshops == ks.number_of_working_workshops)
 		{
-			cout << "It is impossible to start the existing workshop, since all the workshops are working." << endl;
+			cout << "\nIt is impossible to start the existing workshop, since all the workshops are working." << endl;
 		}
 		else 
 		{
@@ -218,7 +227,7 @@ void Edit_KS(KS& ks)
 	{
 		if (ks.number_of_working_workshops == 0)
 		{
-			cout << "It is impossible to stop the existing workshop, since all the workshops aren't working." << endl;
+			cout << "\nIt is impossible to stop the existing workshop, since all the workshops aren't working." << endl;
 		}
 		else
 		{
@@ -227,7 +236,9 @@ void Edit_KS(KS& ks)
 	}
 	else
 	{
-		cout << "Error. Please enter 1 or 2 or 3:"
+		system("cls");
+		cout << "\nError!" << endl;
+		Edit_KS(ks);
 	}
 }
 
@@ -264,13 +275,13 @@ int main()
 			case 4:
 			{
 				system("cls");
-					
+				Edit_Pipe(pipe);
 				break;
 			}
 			case 5:
 			{
 				system("cls");
-
+				Edit_KS(ks);
 				break;
 			}
 			case 6:
@@ -283,12 +294,19 @@ int main()
 			case 7:
 			{
 				system("cls");
-
+				Input_From_File_Pipe(pipe);
+				Input_From_File_KS(ks);
 				break;
 			}
 			case 0:
 			{
 				return 0;
+			}
+			default:
+			{
+				system("pause");
+				system("cls");
+				cout << "Error! Please try again!" << endl;
 			}
 		}
 	}
