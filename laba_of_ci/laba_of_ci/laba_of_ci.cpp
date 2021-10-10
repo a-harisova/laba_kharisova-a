@@ -76,11 +76,11 @@ double Check_Number()
 	while (true)
 	{
 		cin >> value;
-		if (cin.fail())
+		if (cin.fail() || value <= 0)
 		{
 			cin.clear();
 			cin.ignore(10000, '\n');
-			cout << "Please, enter correct data: ";
+			cout << "Please, enter correct data: " << endl;
 		}
 		else return value;
 	}
@@ -89,7 +89,8 @@ double Check_Number()
 PIPE Input_Pipe()
 {
 	PIPE pipe;
-	pipe.id = 0;
+	cout << "Please, enter the pipe ID: ";
+	pipe.id = Check_Number();
 	cout << "How long is the pipe? Please enter a double value: ";
 	pipe.length = Check_Number();
 	cout << "What is the diameter of the pipe? Please enter an integer value: ";
@@ -101,13 +102,18 @@ PIPE Input_Pipe()
 KS Input_KS()
 {
 	KS ks;
-	ks.id = 0;
+	cout << "Please, enter the ks ID: ";
+	ks.id = Check_Number();
 	cout << "Please enter the name of compressor station: ";
 	cin >> ks.name;
 	cout << "Please enter the integer value of workshops of the compressor station: ";
 	ks.number_of_workshops = Check_Number();
-	cout << "Please enter the number of workshops of the compressor station, that are currently operating: ";
-	ks.number_of_working_workshops = Check_Number();
+	do
+	{
+		cout << "Please enter the integer value of workshops of the compressor station, that are currently operating. ";
+		cout << "The number must be less than value of workshops of the compressor station!: ";
+		ks.number_of_working_workshops = Check_Number();
+	} while (ks.number_of_workshops < ks.number_of_working_workshops);
 	ks.efficiency = 80;
 	return ks;
 }
@@ -116,75 +122,91 @@ void Output_In_File_Pipe(const PIPE& pipe)
 {
 	ofstream fout;
 	fout.open("PIPE.txt");
-	if (pipe.length == 0)
+	if (fout.is_open())
 	{
-		if (!fout.is_open())
+		if (pipe.length == 0)
 		{
-			cout << "Error, text file didn't open." << endl;
+			cout << "No pipe information, fill in the data an try again." << endl;
 		}
 		else 
 		{
-			cout << "No pipe information, fill in the data an try again." << endl;
+			fout << pipe.id << endl;
+			fout << pipe.length << endl;
+			fout << pipe.diameter << endl;
+			fout << pipe.repair << endl;
+			fout.close();
 		}
 	}
 	else
 	{
-		fout << pipe.id << endl;
-		fout << pipe.length << endl;
-		fout << pipe.diameter << endl;
-		fout << pipe.repair << endl;
+		cout << "Error! Text file didn't open! Try again." << endl;	
 	}
-	fout.close();
 }
 
 void Output_In_File_KS(const KS& ks)
 {
 	ofstream fout;
 	fout.open("KS.txt");
-	if (ks.number_of_workshops <= 0)
+	if (fout.is_open())
 	{
-		if (!fout.is_open())
+		if (ks.number_of_workshops == 0)
 		{
-			cout << "Error, text file didn't open." << endl;
+			cout << "No KS information, fill in the data an try again." << endl;
 		}
 		else
 		{
-			cout << "No KS information, fill in the data an try again." << endl;
+			fout << ks.id << endl;
+			fout << ks.name << endl;
+			fout << ks.number_of_workshops << endl;
+			fout << ks.number_of_working_workshops << endl;
+			fout << ks.efficiency << endl;
+			fout.close();
 		}
 	}
 	else
 	{
-		fout << ks.id << endl;
-		fout << ks.name << endl;
-		fout << ks.number_of_workshops << endl;
-		fout << ks.number_of_working_workshops << endl;
-		fout << ks.efficiency << endl;
+		cout << "Error! Text file didn't open! Try again." << endl;
 	}
-	fout.close();
 }
 
-PIPE Input_From_File_Pipe(PIPE& pipe)
+PIPE Input_From_File_Pipe()
 {
+	PIPE pipe;
 	ifstream fin;
 	fin.open("PIPE.txt");
-	fin >> pipe.id;
-	fin >> pipe.length;
-	fin >> pipe.diameter;
-	fin >> pipe.repair;
-	fin.close();
+	if (fin.is_open())
+	{
+		fin >> pipe.id;
+		fin >> pipe.length;
+		fin >> pipe.diameter;
+		fin >> pipe.repair;
+		fin.close();
+	}
+	else
+	{
+		cout << "File didn't open! Please, try again.";
+	}
 	return pipe;
 }
 
-KS Input_From_File_KS(KS& ks)
+KS Input_From_File_KS()
 {
+	KS ks;
 	ifstream fin;
 	fin.open("KS.txt");
-	fin >> ks.id;
-	fin >> ks.name;
-	fin >> ks.number_of_workshops;
-	fin >> ks.number_of_working_workshops;
-	fin >> ks.efficiency;
-	fin.close();
+	if (fin.is_open())
+	{
+		fin >> ks.id;
+		fin >> ks.name;
+		fin >> ks.number_of_workshops;
+		fin >> ks.number_of_working_workshops;
+		fin >> ks.efficiency;
+		fin.close();
+	}
+	else
+	{
+		cout << "File didn't open! Please, try again.";
+	}
 	return ks;
 }
 
@@ -208,37 +230,48 @@ void Edit_KS(KS& ks)
 	cout << "Enter 3 if you want to stop an existing workshop." << endl;
 	cout << "Enter 1 or 2 or 3: ";
 	cin >> choice;
-	if (choice == 1)
+	if (cin.fail())
 	{
-		ks.number_of_workshops++;
-	}
-	else if (choice == 2)
-	{
-		if (ks.number_of_workshops == ks.number_of_working_workshops)
-		{
-			cout << "\nIt is impossible to start the existing workshop, since all the workshops are working." << endl;
-		}
-		else 
-		{
-			ks.number_of_working_workshops++;
-		}
-	}
-	else if (choice == 3)
-	{
-		if (ks.number_of_working_workshops == 0)
-		{
-			cout << "\nIt is impossible to stop the existing workshop, since all the workshops aren't working." << endl;
-		}
-		else
-		{
-			ks.number_of_working_workshops--;
-		}
+		system("cls");
+		cin.clear();
+		cin.ignore(10000, '\n');
+		cout << "Error!" << endl;
+		Edit_KS(ks);
 	}
 	else
 	{
-		system("cls");
-		cout << "\nError!" << endl;
-		Edit_KS(ks);
+		if (choice == 1)
+		{
+			ks.number_of_workshops++;
+		}
+		else if (choice == 2)
+		{
+			if (ks.number_of_workshops == ks.number_of_working_workshops)
+			{
+				cout << "\nIt is impossible to start the existing workshop, since all the workshops are working." << endl << endl;
+			}
+			else
+			{
+				ks.number_of_working_workshops++;
+			}
+		}
+		else if (choice == 3)
+		{
+			if (ks.number_of_working_workshops == 0)
+			{
+				cout << "\nIt is impossible to stop the existing workshop, since all the workshops aren't working." << endl << endl;
+			}
+			else
+			{
+				ks.number_of_working_workshops--;
+			}
+		}
+		else
+		{
+			system("cls");
+			cout << "Error!" << endl;
+			Edit_KS(ks);
+		}
 	}
 }
 
@@ -250,7 +283,7 @@ int main()
 	{
 		PrintMenu();
 		int i;
-		cin >> i;
+		i = Check_Number();
 		switch (i)
 		{
 			case 1:
@@ -294,8 +327,8 @@ int main()
 			case 7:
 			{
 				system("cls");
-				Input_From_File_Pipe(pipe);
-				Input_From_File_KS(ks);
+				pipe = Input_From_File_Pipe();
+				ks = Input_From_File_KS();
 				break;
 			}
 			case 0:
