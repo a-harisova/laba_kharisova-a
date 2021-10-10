@@ -165,11 +165,70 @@ void Output_In_File_KS(const KS& ks)
 	fout.close();
 }
 
-void Input_In_File_Pipe(PIPE& pipe)
+void Input_In_File_Pipe(const PIPE& pipe)
 {
 	ofstream fout;
 	fout.open("Pipe.txt");
+	fout << pipe.id << endl;
+	fout << pipe.length << endl;
+	fout << pipe.diameter << endl;
+	fout << pipe.repair << endl;
+	fout.close();
+}
 
+void Input_In_File_KS(const KS& ks)
+{
+	ofstream fout;
+	fout.open("KS.txt");
+	fout << ks.id << endl;
+	fout << ks.name << endl;
+	fout << ks.number_of_workshops << endl;
+	fout << ks.number_of_working_workshops << endl;
+	fout.close();
+}
+
+void Edit_Pipe(PIPE& pipe)
+{
+	pipe.repair = (!pipe.repair);
+}
+void Edit_KS(KS& ks)
+{
+	int choice;
+	cout << "What do you want to do?" << endl;
+	cout << "Enter 1 if you want to create a new workshop." << endl;
+	cout << "Enter 2 if you want to start an existing workshop." << endl;
+	cout << "Enter 3 if you want to stop an existing workshop." << endl;
+	cout << "Enter 1 or 2 or 3 :" << choice << endl;
+	if (choice == 1)
+	{
+		ks.number_of_workshops++;
+	}
+	else if (choice == 2)
+	{
+		if (ks.number_of_workshops == ks.number_of_working_workshops)
+		{
+			cout << "It is impossible to start the existing workshop, since all the workshops are working." << endl;
+		}
+		else 
+		{
+			ks.number_of_working_workshops++;
+		}
+	}
+	else if (choice == 3)
+	{
+		if (ks.number_of_working_workshops == 0)
+		{
+			cout << "It is impossible to stop the existing workshop, since all the workshops aren't working." << endl;
+		}
+		else
+		{
+			ks.number_of_working_workshops--;
+		}
+	}
+	else
+	{
+		cout << "Error. Please enter 1 or 2 or 3:"
+	}
 }
 
 int main()
