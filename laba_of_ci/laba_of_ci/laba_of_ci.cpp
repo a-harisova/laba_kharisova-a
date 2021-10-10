@@ -8,19 +8,19 @@ using namespace std;
 
 struct PIPE
 {
-	int id;
-	double length;
-	double diameter;
+	int id = 0;
+	double length = 0;
+	double diameter = 0;
 	string repair;
 };
 
 struct KS
 {
-	int id;
+	int id = 0;
 	string name;
-	int number_of_workshops;
-	int number_of_working_workshops;
-	double efficiency;
+	int number_of_workshops = 0;
+	int number_of_working_workshops = 0;
+	double efficiency = 0;
 };
 
 void PrintMenu()
@@ -39,30 +39,61 @@ void PrintMenu()
 void Output_Pipe(const PIPE& pipe)
 {
 	cout << "PIPE INFORMATION: " << endl;
-	cout << "ID = " << pipe.id << endl;
-	cout << "Length = " << pipe.length << endl;
-	cout << "Diameter = " << pipe.diameter << endl;
-	cout << "Indicator under repair = " << pipe.repair << endl;
+	if (pipe.length == 0)
+	{
+		cout << "No data, please enter information" << endl << endl;
+	}
+	else 
+	{
+		cout << "ID = " << pipe.id << endl;
+		cout << "Length = " << pipe.length << endl;
+		cout << "Diameter = " << pipe.diameter << endl;
+		cout << "Indicator under repair = " << pipe.repair << endl;
+	}
 }
 
 void Output_KS(const KS& ks)
 {
-	cout << "KS INFORMATION: " << endl;
-	cout << "ID = " << ks.id << endl;
-	cout << "Name = " << ks.name << endl;
-	cout << "The number of workshops of the compressor station = " << ks.number_of_workshops << endl;
-	cout << "The number of workshops of the compressor station, that are currently operating = " << ks.number_of_working_workshops << endl;
-	cout << "Efficiency, % = " << ks.efficiency << endl;
+	cout << "\nKS INFORMATION: " << endl;
+	if (ks.number_of_workshops == 0)
+	{
+		cout << "No data, please enter information" << endl << endl;
+	}
+	else
+	{
+		cout << "ID = " << ks.id << endl;
+		cout << "Name = " << ks.name << endl;
+		cout << "The number of workshops of the compressor station = " << ks.number_of_workshops << endl;
+		cout << "The number of workshops of the compressor station, that are currently operating = " << ks.number_of_working_workshops << endl;
+		cout << "Efficiency, % = " << ks.efficiency << endl << endl;
+	}
+	
+}
+
+double Check_Number()
+{
+	double value;
+	while (true)
+	{
+		cin >> value;
+		if (cin.fail())
+		{
+			cin.clear();
+			cin.ignore(32767, '\n');
+			cout << "Please, enter correct data: ";
+		}
+		else return value;
+	}
 }
 
 PIPE Input_Pipe()
 {
 	PIPE pipe;
 	pipe.id = 0;
-	cout << "How long is the pipe? Please enter a number without spaces: ";
-	cin >> pipe.length;
-	cout << "What is the diameter of the pipe? Please enter a number: ";
-	cin >> pipe.diameter;
+	cout << "How long is the pipe? Please enter a double value: ";
+	pipe.length = Check_Number();
+	cout << "What is the diameter of the pipe? Please enter an integer value: ";
+	pipe.diameter = Check_Number();
 	pipe.repair = "no";
 	return pipe;
 }
@@ -73,10 +104,10 @@ KS Input_KS()
 	ks.id = 0;
 	cout << "Please enter the name of compressor station: ";
 	cin >> ks.name;
-	cout << "Please enter the number of workshops of the compressor station: ";
-	cin >> ks.number_of_workshops;
+	cout << "Please enter the integer value of workshops of the compressor station: ";
+	ks.number_of_workshops = Check_Number();
 	cout << "Please enter the number of workshops of the compressor station, that are currently operating: ";
-	cin >> ks.number_of_working_workshops;
+	ks.number_of_working_workshops = Check_Number();
 	ks.efficiency = 80;
 	return ks;
 }
