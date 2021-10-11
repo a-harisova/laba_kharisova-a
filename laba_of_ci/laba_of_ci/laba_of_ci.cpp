@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <tuple>
 
 using namespace std;
 
@@ -11,7 +12,7 @@ struct PIPE
 	int id = 0;
 	double length = 0;
 	double diameter = 0;
-	string repair = "no";
+	bool repair = false;
 };
 
 struct KS
@@ -31,7 +32,7 @@ void PrintMenu()
 		 << "4. Edit pipe" << endl
 		 << "5. Edit KS" << endl
 		 << "6. Save" << endl
-		 << "7. Dowlonad" << endl
+		 << "7. Dowload" << endl
 		 << "0. Exit" << endl
 		 << "Choose an action? please: ";
 }
@@ -48,7 +49,9 @@ void Output_Pipe(const PIPE& pipe)
 		cout << "ID = " << pipe.id << endl;
 		cout << "Length = " << pipe.length << endl;
 		cout << "Diameter = " << pipe.diameter << endl;
-		cout << "Repairs needed - " << pipe.repair << endl;
+		if (pipe.repair)
+			cout << "Repairs needed - yes" << endl;
+		else cout << "Repairs needed - no" << endl;
 	}
 }
 
@@ -76,7 +79,7 @@ double Check_Number()
 	while (true)
 	{
 		cin >> value;
-		if (cin.fail() || value <= 0)
+		if (cin.fail() || value < 0 || cin.peek() != '\n' || value >= 1000000)
 		{
 			cin.clear();
 			cin.ignore(10000, '\n');
@@ -95,7 +98,7 @@ PIPE Input_Pipe()
 	pipe.length = Check_Number();
 	cout << "What is the diameter of the pipe? Please enter an integer value: ";
 	pipe.diameter = Check_Number();
-	pipe.repair = "no";
+	pipe.repair = false;
 	return pipe;
 }
 
@@ -105,7 +108,8 @@ KS Input_KS()
 	cout << "Please, enter the ks ID: ";
 	ks.id = Check_Number();
 	cout << "Please enter the name of compressor station: ";
-	cin >> ks.name;
+	cin.ignore(2000, '\n');
+	getline(cin, ks.name);
 	cout << "Please enter the integer value of workshops of the compressor station: ";
 	ks.number_of_workshops = Check_Number();
 	do
@@ -118,24 +122,31 @@ KS Input_KS()
 	return ks;
 }
 
-void Output_In_File_Pipe(const PIPE& pipe)
+void Output_In_File(const PIPE& pipe, const KS& ks)
 {
+
+	if (pipe.length == 0)
+	{
+		cout << "No pipe information, fill in the data an try again." << endl;
+	}
+	if (ks.number_of_workshops == 0)
+	{
+		cout << "No KS information, fill in the data an try again." << endl;
+	}
 	ofstream fout;
-	fout.open("PIPE.txt");
+	fout.open("PIPE_and_KS.txt");
 	if (fout.is_open())
 	{
-		if (pipe.length == 0)
-		{
-			cout << "No pipe information, fill in the data an try again." << endl;
-		}
-		else 
-		{
-			fout << pipe.id << endl;
-			fout << pipe.length << endl;
-			fout << pipe.diameter << endl;
-			fout << pipe.repair << endl;
-			fout.close();
-		}
+		fout << pipe.id << endl;
+		fout << pipe.length << endl;
+		fout << pipe.diameter << endl;
+		fout << pipe.repair << endl;
+		fout << ks.id << endl;
+		fout << ks.name << endl;
+		fout << ks.number_of_workshops << endl;
+		fout << ks.number_of_working_workshops << endl;
+		fout << ks.efficiency << endl;
+		fout.close();
 	}
 	else
 	{
@@ -143,59 +154,18 @@ void Output_In_File_Pipe(const PIPE& pipe)
 	}
 }
 
-void Output_In_File_KS(const KS& ks)
-{
-	ofstream fout;
-	fout.open("KS.txt");
-	if (fout.is_open())
-	{
-		if (ks.number_of_workshops == 0)
-		{
-			cout << "No KS information, fill in the data an try again." << endl;
-		}
-		else
-		{
-			fout << ks.id << endl;
-			fout << ks.name << endl;
-			fout << ks.number_of_workshops << endl;
-			fout << ks.number_of_working_workshops << endl;
-			fout << ks.efficiency << endl;
-			fout.close();
-		}
-	}
-	else
-	{
-		cout << "Error! Text file didn't open! Try again." << endl;
-	}
-}
-
-PIPE Input_From_File_Pipe()
+tuple<PIPE, KS> Input_From_File()
 {
 	PIPE pipe;
+	KS ks;
 	ifstream fin;
-	fin.open("PIPE.txt");
+	fin.open("PIPE_and_KS.txt");
 	if (fin.is_open())
 	{
 		fin >> pipe.id;
 		fin >> pipe.length;
 		fin >> pipe.diameter;
 		fin >> pipe.repair;
-		fin.close();
-	}
-	else
-	{
-		cout << "File didn't open! Please, try again.";
-	}
-	return pipe;
-}
-
-KS Input_From_File_KS()
-{
-	KS ks;
-	ifstream fin;
-	fin.open("KS.txt");
-	if (fin.is_open())
-	{
 		fin >> ks.id;
 		fin >> ks.name;
 		fin >> ks.number_of_workshops;
@@ -207,44 +177,33 @@ KS Input_From_File_KS()
 	{
 		cout << "File didn't open! Please, try again.";
 	}
-	return ks;
+	return { pipe, ks };
 }
 
 void Edit_Pipe(PIPE& pipe)
 {
-	if (pipe.repair == "no")
-	{
-		pipe.repair = "yes";
-	}
-	else
-	{
-		pipe.repair = "no";
-	}
+	pipe.repair = (!pipe.repair);
 }
 void Edit_KS(KS& ks)
 {
-	int choice;
+	if (ks.number_of_workshops == 0)
+	{
+		cout << "No KS information, fill in the data an try again." << endl << endl;
+		return;
+	}
 	cout << "What do you want to do?" << endl;
 	cout << "Enter 1 if you want to create a new workshop." << endl;
 	cout << "Enter 2 if you want to start an existing workshop." << endl;
 	cout << "Enter 3 if you want to stop an existing workshop." << endl;
 	cout << "Enter 1 or 2 or 3: ";
-	cin >> choice;
-	if (cin.fail())
+	int choice = Check_Number();
+	switch(choice)
 	{
-		system("cls");
-		cin.clear();
-		cin.ignore(10000, '\n');
-		cout << "Error!" << endl;
-		Edit_KS(ks);
-	}
-	else
-	{
-		if (choice == 1)
+		case 1:
 		{
 			ks.number_of_workshops++;
 		}
-		else if (choice == 2)
+		case 2:
 		{
 			if (ks.number_of_workshops == ks.number_of_working_workshops)
 			{
@@ -255,7 +214,7 @@ void Edit_KS(KS& ks)
 				ks.number_of_working_workshops++;
 			}
 		}
-		else if (choice == 3)
+		case 3:
 		{
 			if (ks.number_of_working_workshops == 0)
 			{
@@ -266,7 +225,7 @@ void Edit_KS(KS& ks)
 				ks.number_of_working_workshops--;
 			}
 		}
-		else
+		default:
 		{
 			system("cls");
 			cout << "Error!" << endl;
@@ -284,51 +243,43 @@ int main()
 		PrintMenu();
 		int i;
 		i = Check_Number();
+		system("cls");
 		switch (i)
 		{
 			case 1:
 			{
-				system("cls");
 				pipe = Input_Pipe();
 				break;
 			}
 			case 2:
 			{
-				system("cls");
 				ks = Input_KS();
 				break;
 			}
 			case 3: 
 			{
-				system("cls");
 				Output_Pipe(pipe);
 				Output_KS(ks);
 				break;
 			}
 			case 4:
 			{
-				system("cls");
 				Edit_Pipe(pipe);
 				break;
 			}
 			case 5:
 			{
-				system("cls");
 				Edit_KS(ks);
 				break;
 			}
 			case 6:
 			{
-				system("cls");
-				Output_In_File_Pipe(pipe);
-				Output_In_File_KS(ks);
+				Output_In_File(pipe, ks);
 				break;
 			}
 			case 7:
 			{
-				system("cls");
-				pipe = Input_From_File_Pipe();
-				ks = Input_From_File_KS();
+				tie(pipe, ks) = Input_From_File();
 				break;
 			}
 			case 0:
@@ -338,7 +289,6 @@ int main()
 			default:
 			{
 				system("pause");
-				system("cls");
 				cout << "Error! Please try again!" << endl;
 			}
 		}
