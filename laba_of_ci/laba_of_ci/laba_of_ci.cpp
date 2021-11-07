@@ -14,7 +14,7 @@ struct PIPE
 {
 	int id;
 	double length;
-	double diameter;
+	int diameter;
 	bool repair = false;
 };
 
@@ -62,7 +62,7 @@ PIPE Input_Pipe()
 	cout << "How long is the pipe? Please enter a double value: ";
 	pipe.length = Get_Correct_Number(0.0, 1000000.0);
 	cout << "What is the diameter of the pipe? Please enter an integer value: ";
-	pipe.diameter = Get_Correct_Number(0.0, 1000000.0);
+	pipe.diameter = Get_Correct_Number(0, 1000000);
 	pipe.repair = false;
 	return pipe;
 }
@@ -78,8 +78,8 @@ KS Input_KS()
 	ks.number_of_workshops = Get_Correct_Number(0, 1000000);
 	do
 	{
-		cout << "Please enter the integer value of workshops of the compressor station, that are currently operating. ";
-		cout << "The number must be less than value of workshops of the compressor station!: ";
+		cout << "Please enter the integer value of workshops of the compressor station, that are currently operating. " << endl
+			 << "The number must be less than value of workshops of the compressor station!: ";
 		ks.number_of_working_workshops = Get_Correct_Number(0, 1000000);
 	} while (ks.number_of_workshops < ks.number_of_working_workshops);
 	ks.efficiency = 80;
@@ -142,11 +142,10 @@ void Edit_KS(KS& ks)
 		cout << "No KS information, fill in the data an try again." << endl << endl;
 		return;
 	}
-	cout << "What do you want to do?" << endl;
-	cout << "Enter 1 if you want to create a new workshop." << endl;
-	cout << "Enter 2 if you want to start an existing workshop." << endl;
-	cout << "Enter 3 if you want to stop an existing workshop." << endl;
-	cout << "Enter 1 or 2 or 3: ";
+	cout << "What do you want to do?" << endl << "Enter 1 if you want to create a new workshop." << endl
+	     << "Enter 2 if you want to start an existing workshop." << endl
+		 << "Enter 3 if you want to stop an existing workshop." << endl
+		 << "Enter 1 or 2 or 3: ";
 	switch(Get_Correct_Number(1, 3))
 	{
 		case 1:
@@ -156,24 +155,16 @@ void Edit_KS(KS& ks)
 		case 2:
 		{
 			if (ks.number_of_workshops == ks.number_of_working_workshops)
-			{
 				cout << "\nIt is impossible to start the existing workshop, since all the workshops are working." << endl << endl;
-			}
 			else
-			{
 				ks.number_of_working_workshops++;
-			}
 		}
 		case 3:
 		{
 			if (ks.number_of_working_workshops == 0)
-			{
 				cout << "\nIt is impossible to stop the existing workshop, since all the workshops aren't working." << endl << endl;
-			}
 			else
-			{
 				ks.number_of_working_workshops--;
-			}
 		}
 		default:
 		{
@@ -187,9 +178,7 @@ void Edit_KS(KS& ks)
 PIPE& Select_Pipe(map <int, PIPE>& pipes)
 {
 	if (pipes.size() == 0)
-	{
 		cout << "Error!Pipes don't enter" << endl;
-	}
 	else 
 	{
 		cout << "Please enter pipe index (1, " << pipes.size() << "): ";
@@ -201,9 +190,7 @@ PIPE& Select_Pipe(map <int, PIPE>& pipes)
 KS& Select_KS(map <int, KS>& kss)
 {
 	if (kss.size() == 0)
-	{
 		cout << "Error! KS don't enter" << endl;
-	}
 	else 
 	{
 		cout << "Please enter ks index(1, " << kss.size() << "): ";
@@ -214,10 +201,10 @@ KS& Select_KS(map <int, KS>& kss)
 
 void operator << (ostream& out, PIPE& pipe)
 {
-	out << pipe.id << " PIPE INFORMATION: " << endl;
-	out << "ID = " << pipe.id << endl;
-	out << "Length = " << pipe.length << endl;
-	out << "Diameter = " << pipe.diameter << endl;
+	out << pipe.id << " PIPE INFORMATION: " << endl
+		<< "ID = " << pipe.id << endl
+		<< "Length = " << pipe.length << endl
+		<< "Diameter = " << pipe.diameter << endl;
 	if (pipe.repair)
 		out << "Repairs needed - yes" << endl;
 	else out << "Repairs needed - no" << endl << endl;
@@ -225,12 +212,12 @@ void operator << (ostream& out, PIPE& pipe)
 
 void operator << (ostream& out, KS& ks)
 {
-	out << ks.id << " KS INFORMATION: " << endl;
-	out << "ID = " << ks.id << endl;
-	out << "Name = " << ks.name << endl;
-	out << "The number of workshops of the compressor station = " << ks.number_of_workshops << endl;
-	out << "The number of workshops of the compressor station, that are currently operating = " << ks.number_of_working_workshops << endl;
-	out << "Efficiency, % = " << ks.efficiency << endl << endl;
+	out << ks.id << " KS INFORMATION: " << endl
+		<< "ID = " << ks.id << endl
+		<< "Name = " << ks.name << endl
+		<< "The number of workshops of the compressor station = " << ks.number_of_workshops << endl
+		<< "The number of workshops of the compressor station, that are currently operating = " << ks.number_of_working_workshops << endl
+		<< "Efficiency, % = " << ks.efficiency << endl << endl;
 }
 
 int main()
@@ -264,21 +251,19 @@ int main()
 				if (pipes.size() != 0)
 				{
 					for (int i = 1; i <= pipes.size(); i++)
-					cout << pipes[i];
+						if (pipes[i].id != 0)
+							cout << pipes[i];
 				}
 				else
-				{
 					cout << "No pipe data, please enter it and try again." << endl;
-				}
 				if (kss.size() != 0)
 				{
 					for (int i = 1; i <= kss.size(); i++)
-						cout << kss[i];
+						if (kss[i].id != 0)
+							cout << kss[i];
 				}
 				else
-				{
 					cout << "No ks data, please enter it and try again." << endl;
-				}
 				break;
 			}
 			case 4:
@@ -294,21 +279,15 @@ int main()
 								Edit_Pipe(pipes[i]);
 						}
 						else
-						{
 							cout << "No pipe data, please enter it and try again." << endl;
-						}
 						break;
 					}
 					case 2:
 					{
 						if (pipes.size() != 0)
-						{
 							Edit_Pipe(Select_Pipe(pipes));
-						}
 						else
-						{
 							cout << "No pipe data, please enter it and try again." << endl;
-						}
 						break;
 					}
 				}
@@ -331,15 +310,15 @@ int main()
 					fout << pipes.size() << endl;
 					fout << kss.size() << endl;
 					for (int i = 1; i <= pipes.size(); i++)
-						Output_In_File_Pipe(fout, pipes[i]);
+						if (pipes[i].id != 0)
+							Output_In_File_Pipe(fout, pipes[i]);
 					for (int i = 1; i <= kss.size(); i++)
-						Output_In_File_KS(fout, kss[i]);
+						if (kss[i].id != 0)
+							Output_In_File_KS(fout, kss[i]);
 					fout.close();
 				}
 				else
-				{
 					cout << "Error! Text file didn't open! Try again." << endl;
-				}
 				break;
 			}
 			case 7:
@@ -355,9 +334,7 @@ int main()
 					fin.close();
 				}
 				else
-				{
 					cout << "File didn't open! Please, try again.";
-				}
 				break;
 			}
 			case 8:
@@ -369,9 +346,7 @@ int main()
 					pipes.erase(index);
 				}
 				else 
-				{
 					cout << "Impossible to remove the pipe, since it hasn't yet been entered." << endl;
-				}
 				break;
 			}
 			case 9:
@@ -383,9 +358,7 @@ int main()
 					kss.erase(index);
 				}
 				else
-				{
 					cout << "Impossible to remove the ks, since it hasn't yet been entered." << endl;
-				}
 				break;
 			}
 			case 0:
