@@ -241,7 +241,6 @@ int main()
 	KS ks;
 	while (1)
 	{
-		system("pause");
 		system("cls");
 		PrintMenu();
 		switch (Get_Correct_Number(0, 9))
@@ -322,8 +321,11 @@ int main()
 			}
 			case 6:
 			{
+				cout << "Please, enter the file name: ";
+				string filename;
+				cin >> filename;
 				ofstream fout;
-				fout.open("PIPE_and_KS.txt");
+				fout.open(filename);
 				if (fout.is_open())
 				{
 					fout << pipes.size() << endl;
@@ -341,9 +343,12 @@ int main()
 				break;
 			}
 			case 7:
-			{
+			{	
+				cout << "Please, enter the file name: ";
+				string filename;
+				cin >> filename;
 				ifstream fin;
-				fin.open("PIPE_and_KS.txt");
+				fin.open(filename);
 				if (fin.is_open())
 				{
 					Input_From_File(fin, pipes, kss);
@@ -392,6 +397,7 @@ int main()
 				cout << "Error! Please try again!" << endl;
 			}
 		}
+		system("pause");
 	}
 	return 0;
 }
