@@ -36,24 +36,10 @@ void PrintMenu()
 		 << "5. Edit KS" << endl
 		 << "6. Save" << endl
 		 << "7. Dowload" << endl
+		 << "8. Delete pipe" << endl
+		 << "9. Delete KS" << endl
 		 << "0. Exit" << endl
 		 << "Choose action, please: ";
-}
-
-double Check_Number()
-{
-	double value;
-	while (true)
-	{
-		cin >> value;
-		if (cin.fail() || value < 0 || cin.peek() != '\n' || value >= 1000000)
-		{
-			cin.clear();
-			cin.ignore(10000, '\n');
-			cout << "Please, enter correct data: " << endl;
-		}
-		else return value;
-	}
 }
 
 template <typename type>
@@ -74,9 +60,9 @@ PIPE Input_Pipe()
 	PIPE pipe;
 	pipe.id = kol_pipe;
 	cout << "How long is the pipe? Please enter a double value: ";
-	pipe.length = Check_Number();
+	pipe.length = Get_Correct_Number(0.0, 1000000.0);
 	cout << "What is the diameter of the pipe? Please enter an integer value: ";
-	pipe.diameter = Check_Number();
+	pipe.diameter = Get_Correct_Number(0.0, 1000000.0);
 	pipe.repair = false;
 	return pipe;
 }
@@ -89,56 +75,66 @@ KS Input_KS()
 	cin.ignore(2000, '\n');
 	getline(cin, ks.name);
 	cout << "Please enter the integer value of workshops of the compressor station: ";
-	ks.number_of_workshops = Check_Number();
+	ks.number_of_workshops = Get_Correct_Number(0, 1000000);
 	do
 	{
 		cout << "Please enter the integer value of workshops of the compressor station, that are currently operating. ";
 		cout << "The number must be less than value of workshops of the compressor station!: ";
-		ks.number_of_working_workshops = Check_Number();
+		ks.number_of_working_workshops = Get_Correct_Number(0, 1000000);
 	} while (ks.number_of_workshops < ks.number_of_working_workshops);
 	ks.efficiency = 80;
 	return ks;
 }
 
-void Output_In_File(ofstream& fout, const map <int, PIPE&> pipes, const map <int, KS&> kss)
+void Output_In_File_Pipe(ofstream& fout, const PIPE pipe)
 {
-	for (int i = 0; i < kol_pipe - 1; i++)
-	{
-		fout << pipes[i].id << endl;
-		fout << pipes[i].length << endl;
-		fout << pipes[i].diameter << endl;
-		fout << pipes[i].repair << endl;
-	}
-	for (int i = 0; i < kol_pipe - 1; i++)
-	{
-		fout << kss[i].id << endl;
-		fout << kss[i].name << endl;
-		fout << kss[i].number_of_workshops << endl;
-		fout << kss[i].number_of_working_workshops << endl;
-		fout << kss[i].efficiency << endl;
-	}
+	fout << pipe.id << endl
+		<< pipe.length << endl
+		<< pipe.diameter << endl
+		<< pipe.repair << endl;
 }
 
-tuple<PIPE, KS> Input_From_File(ifstream& fin)
+void Output_In_File_KS(ofstream& fout, const KS ks)
+{
+	fout << ks.id << endl
+		 << ks.name << endl
+		 << ks.number_of_workshops << endl
+		 << ks.number_of_working_workshops << endl
+		 << ks.efficiency << endl;
+}
+
+void Input_From_File(ifstream& fin, map <int, PIPE>& pipes, map <int, KS>& kss)
 {
 	PIPE pipe;
 	KS ks;
-	fin >> pipe.id;
-	fin >> pipe.length;
-	fin >> pipe.diameter;
-	fin >> pipe.repair;
-	fin >> ks.id;
-	fin >> ks.name;
-	fin >> ks.number_of_workshops;
-	fin >> ks.number_of_working_workshops;
-	fin >> ks.efficiency;
-	return { pipe, ks };
+	int pipes_size, kss_size;
+	fin >> pipes_size >> kss_size;
+	for (int i = 1; i <= pipes_size; i++)
+	{
+		fin >> pipe.id;
+		fin >> pipe.length;
+		fin >> pipe.diameter;
+		fin >> pipe.repair;
+		pipes[kol_pipe] = { pipe };
+		kol_pipe++;
+	}
+	for (int i = 1; i <= kss_size; i++)
+	{
+		fin >> ks.id;
+		fin >> ks.name;
+		fin >> ks.number_of_workshops;
+		fin >> ks.number_of_working_workshops;
+		fin >> ks.efficiency;
+		kss[kol_ks] = { ks };
+		kol_ks++;
+	}
 }
 
 void Edit_Pipe(PIPE& pipe)
 {
 	pipe.repair = (!pipe.repair);
 }
+
 void Edit_KS(KS& ks)
 {
 	if (ks.number_of_workshops == 0)
@@ -151,8 +147,7 @@ void Edit_KS(KS& ks)
 	cout << "Enter 2 if you want to start an existing workshop." << endl;
 	cout << "Enter 3 if you want to stop an existing workshop." << endl;
 	cout << "Enter 1 or 2 or 3: ";
-	int choice = Get_Correct_Number(1, 3);
-	switch(choice)
+	switch(Get_Correct_Number(1, 3))
 	{
 		case 1:
 		{
@@ -248,7 +243,7 @@ int main()
 	{
 		system("cls");
 		PrintMenu();
-		switch (Get_Correct_Number(0, 7))
+		switch (Get_Correct_Number(0, 9))
 		{
 			case 1:
 			{
@@ -270,15 +265,9 @@ int main()
 				{
 					cout << pipe;
 				}
-				else {
-					cout << "Please enter information" << endl;
-				}
 				if (ks.id != 0)
 				{
 					cout << ks;
-				}
-				else {
-					cout << "Please enter information" << endl;
 				}
 				break;
 			}
@@ -303,21 +292,7 @@ int main()
 			}
 			case 5:
 			{
-				cout << "Do you want to edit all kompression stations or one? Please, enter 1 if all kss or 2 if one ks: ";
-				switch (Get_Correct_Number(1, 2))
-				{
-					case 1:
-					{
-						if (ks.id != 0)
-						{
-							Edit_KS(ks);
-						}
-					}
-					case 2:
-					{
-						Edit_KS(Select_KS(kss));
-					}
-				}
+				Edit_KS(Select_KS(kss));
 				break;
 			}
 			case 6:
@@ -326,9 +301,12 @@ int main()
 				fout.open("PIPE_and_KS.txt");
 				if (fout.is_open())
 				{
-					fout << kol_pipe << endl;
-					fout << kol_ks << endl;
-					Output_In_File(fout, pipes, kss);
+					fout << pipes.size() << endl;
+					fout << kss.size() << endl;
+					for (int i = 1; i <= pipes.size(); i++)
+						Output_In_File_Pipe(fout, pipes[i]);
+					for (int i = 1; i <= kss.size(); i++)
+						Output_In_File_KS(fout, kss[i]);
 					fout.close();
 				}
 				else
@@ -343,18 +321,7 @@ int main()
 				fin.open("PIPE_and_KS.txt");
 				if (fin.is_open())
 				{
-					int pipes_size, kss_size;
-					fin >> pipes_size;
-					fin >> kss_size;
-					int size = max(pipes_size, kss_size);
-					while (size--)
-					{
-						tie(pipe, ks) = Input_From_File(fin);
-						pipes[kol_pipe] = { pipe };
-						kss[kol_ks] = { ks };
-						kol_pipe++;
-						kol_ks++;
-					}	
+					Input_From_File(fin, pipes, kss);
 					fin.close();
 				}
 				else
@@ -362,6 +329,14 @@ int main()
 					cout << "File didn't open! Please, try again.";
 				}
 				break;
+			}
+			case 8:
+			{
+
+			}
+			case 9:
+			{
+
 			}
 			case 0:
 			{
