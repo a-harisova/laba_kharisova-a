@@ -11,8 +11,8 @@ public:
 	int number_of_working_workshops;
 	double efficiency;
 
-	friend std::ostream& operator << (std::ostream& out, KS& ks);
-	KS Input_KS();
-	void Edit_KS(KS& ks);
+	friend std::ostream& operator << (std::ostream& out, const KS& ks);
+	friend std::istream& operator >> (std::istream& in, KS& ks);
+	static void Edit_KS(KS& ks);
 };
 

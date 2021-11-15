@@ -31,6 +31,7 @@ void PrintMenu()
 void Output_In_File_Pipe(ofstream& fout, const PIPE pipe)
 {
 	fout << pipe.id << endl
+		<< pipe.name << endl
 		<< pipe.length << endl
 		<< pipe.diameter << endl
 		<< pipe.repair << endl;
@@ -54,11 +55,11 @@ void Input_From_File(ifstream& fin, unordered_map <int, PIPE>& pipes, unordered_
 	for (int i = 1; i <= pipes_size; i++)
 	{
 		fin >> pipe.id;
+		fin >> pipe.name;
 		fin >> pipe.length;
 		fin >> pipe.diameter;
 		fin >> pipe.repair;
-		pipes[kol_pipe] = { pipe };
-		kol_pipe++;
+		pipes.emplace(pipe.id, pipe);
 	}
 	for (int i = 1; i <= kss_size; i++)
 	{
@@ -67,50 +68,63 @@ void Input_From_File(ifstream& fin, unordered_map <int, PIPE>& pipes, unordered_
 		fin >> ks.number_of_workshops;
 		fin >> ks.number_of_working_workshops;
 		fin >> ks.efficiency;
-		kss[kol_ks] = { ks };
-		kol_ks++;
+		kss.emplace(ks.id, ks);
 	}
 }
 
-//vector<int> Find_By_Name_KS(const vector<Student>& group, string name = "Unknown")
-//{
-//	vector <int> res;
-//	int i = 0;
-//	for (auto& s : group)
-//	{
-//		if (s.name == name)
-//			res.push_back(i);
-//		i++;
-//	}
-//
-//	return res;
-//}
-//
-//template<typename T>
-//using Filter = bool(*)(const T& smth, T param);
-//
-//bool Check_By_Name(const KS& smth, string param)
-//{
-//	return smth.name == param;
-//}
-//bool Check_By_Repair(const PIPE& smth, bool param)
-//{
-//	return smth.repair == param;
-//}
-//
-//vector <int> Find_By_Filter_PIPE(const map <int, PIPE>& pipes, filter <T> f, bool repair)
-//{
-//	vector <int> res;
-//	int i = 0;
-//	for (int i = 1; i < pipes.size(); i++)
-//	{
-//		if (f(smth, param))
-//			res[i]);
-//		i++;
-//	}
-//
-//	return res;
-//}
+template <typename type>
+type& Select(unordered_map  <int, type>& smth)
+{
+	if (smth.size() == 0)
+		cout << "Error! No data entered" << endl;
+	else
+	{
+		cout << "Please enter index (1, " << smth.size() << "): ";
+		unsigned int index = Get_Correct_Number(1u, smth.size());
+		return smth[index];
+	}
+}
+
+template <typename type>
+void Delete(unordered_map  <int, type>& smth)
+{
+	if (smth.size())
+	{
+		cout << "Please, enter the index(1 - " << smth.size() << "): ";
+		int index = Get_Correct_Number(1u, smth.size());
+		smth.erase(index);
+	}
+	else
+		cout << "Impossible to remove, since it hasn't yet been entered." << endl;
+}
+
+template <typename type, typename type_param>
+using Filter = bool(*)(const type& smth, type_param param);
+template <typename type>
+bool Check_By_Name(const type& smth, string param)
+{
+	return smth.name == param;
+}
+bool Check_By_Repair(const PIPE& smth, bool param)
+{
+	return smth.repair == param;
+}
+bool Check_By_Number_Of_Workshops(const KS& smth, double param)
+{
+	return (smth.number_of_working_workshops / smth.number_of_workshops) * 100 == param;
+}
+
+template <typename type, typename type_param>
+vector <int> Find_By_Filter(const unordered_map <int, type>& map, Filter <type, type_param> f, type_param param)
+{
+	vector <int> res;
+	for (auto& smth : map)
+	{
+		if (f(smth.second, param))
+			res.push_back(smth.first);
+	}
+	return res;
+}
 
 int main()
 {
@@ -126,13 +140,13 @@ int main()
 		{
 			case 1:
 			{
-				pipe = PIPE::Input_Pipe();
+				cin >> pipe;
 				pipes.emplace (pipe.id, pipe);
 				break;
 			}
 			case 2:
 			{
-				ks = KS::Input_KS();
+				cin >> ks;
 				kss.emplace (ks.id, ks);
 				break;
 			}
@@ -156,34 +170,42 @@ int main()
 			}
 			case 4:
 			{
-				cout << "Do you want to edit all pipes or one? Please, enter 1 if all pipes or 2 if one pipe: ";
-				switch (Get_Correct_Number(1, 2))
+				if (pipes.size() != 0)
 				{
-					case 1:
+					cout << "Do you want to edit all pipes or one? Please, enter 1 if all pipes or 2 if one pipe: ";
+					switch (Get_Correct_Number(1, 2))
 					{
-						if (pipes.size() != 0)
+						case 1:
 						{
-							for (const auto& p : pipes)
-								Edit_Pipe(p.second);
+							if (pipes.size() != 0)
+							{
+								for (auto& p : pipes)
+									PIPE::Edit_Pipe(p.second);
+							}
+							else
+								cout << "No pipe data, please enter it and try again." << endl;
+							break;
 						}
-						else
-							cout << "No pipe data, please enter it and try again." << endl;
-						break;
-					}
-					case 2:
-					{
-						if (pipes.size() != 0)
-							Edit_Pipe(Select(pipes));
-						else
-							cout << "No pipe data, please enter it and try again." << endl;
-						break;
+						case 2:
+						{
+							if (pipes.size() != 0)
+								PIPE::Edit_Pipe(Select(pipes));
+							else
+								cout << "No pipe data, please enter it and try again." << endl;
+							break;
+						}
 					}
 				}
+				else
+					cout << "No pipe data, please enter it and try again." << endl;
 				break;
 			}
 			case 5:
 			{
-				Edit_KS(Select(kss));
+				if (kss.size() != 0)
+					KS::Edit_KS(Select(kss));
+				else 
+					cout << "No KS information, fill in the data an try again." << endl;
 				break;
 			}
 			case 6:
@@ -241,7 +263,6 @@ int main()
 
 				for (int i : Find_By_Filter(kss, Check_By_Name, name))
 					cout << kss[i];*/
-
 				break;
 			}
 			case 0:
