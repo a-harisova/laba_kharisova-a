@@ -30,19 +30,19 @@ void PrintMenu()
 
 void Output_In_File_Pipe(ofstream& fout, const PIPE pipe)
 {
-	fout << pipe.id << endl
+	fout << pipe.GetID() << endl
 		<< pipe.name << endl
 		<< pipe.length << endl
 		<< pipe.diameter << endl
-		<< pipe.repair << endl;
+		<< pipe.GetRepair() << endl;
 }
 
 void Output_In_File_KS(ofstream& fout, const KS ks)
 {
-	fout << ks.id << endl
+	fout << ks.GetID() << endl
 		 << ks.name << endl
-		 << ks.number_of_workshops << endl
-		 << ks.number_of_working_workshops << endl
+		 << ks.GetNumbOfWorkshops() << endl
+		 << ks.GetNumbOfWorkWorkshops() << endl
 		 << ks.efficiency << endl;
 }
 
@@ -54,21 +54,29 @@ void Input_From_File(ifstream& fin, unordered_map <int, PIPE>& pipes, unordered_
 	fin >> pipes_size >> kss_size;
 	for (int i = 1; i <= pipes_size; i++)
 	{
-		fin >> pipe.id;
+		int ID; 
+		bool Repair;
+		fin >> ID;
+		pipe.SetIDFromFile(ID);
 		fin >> pipe.name;
 		fin >> pipe.length;
 		fin >> pipe.diameter;
-		fin >> pipe.repair;
-		pipes.emplace(pipe.id, pipe);
+		fin >> Repair;
+		pipe.SetRepairFromFile(Repair);
+		pipes.emplace(pipes.size() + 1, pipe);
 	}
 	for (int i = 1; i <= kss_size; i++)
 	{
-		fin >> ks.id;
+		int ID, Number;
+		fin >> ID;
+		ks.SetIDFromFile(ID);
 		fin >> ks.name;
-		fin >> ks.number_of_workshops;
-		fin >> ks.number_of_working_workshops;
+		fin >> Number;
+		ks.SetNumbOfWorkshopsInFile(Number);
+		fin >> Number;
+		ks.SetNumbOfWorkWorkshopsInFile(Number);
 		fin >> ks.efficiency;
-		kss.emplace(ks.id, ks);
+		kss.emplace(kss.size() + 1, ks);
 	}
 }
 
@@ -107,11 +115,11 @@ bool Check_By_Name(const type& smth, string param)
 }
 bool Check_By_Repair(const PIPE& smth, bool param)
 {
-	return smth.repair == param;
+	return smth.GetRepair() != param;
 }
 bool Check_By_Number_Of_Workshops(const KS& smth, double param)
 {
-	return (smth.number_of_working_workshops / smth.number_of_workshops) * 100 == param;
+	return (smth.GetNumbOfWorkWorkshops() / smth.GetNumbOfWorkshops()) * 100 == param;
 }
 
 template <typename type, typename type_param>
@@ -126,6 +134,80 @@ vector <int> Find_By_Filter(const unordered_map <int, type>& map, Filter <type, 
 	return res;
 }
 
+void Filter_For_PIPE(unordered_map <int, PIPE>& pipes)
+{
+	if (pipes.size() == 0)
+		return;
+	cout << "What do you want to do?" << endl
+		<< "Enter 1 if you want to filter by name." << endl
+		<< "Enter 2 if you want to filter by repair." << endl;
+	switch (Get_Correct_Number(1, 2))
+	{
+		case 1:
+		{
+			string name;
+			cin >> ws;
+			cin.ignore(2000, '\n');
+			cout << "Please, enter pipe name: ";
+			getline(cin, name);
+			vector <int> IDs = Find_By_Filter(pipes, Check_By_Name, name);
+			for (auto& id : IDs)
+				cout << id << pipes[id];
+			break;
+		}
+		case 2:
+		{
+			cout << "Please, enter 0 if pipes don't work and 1 if pipes work: ";
+			bool repair = Get_Correct_Number(0, 1);
+			vector <int> IDs = Find_By_Filter(pipes, Check_By_Repair, repair);
+			for (auto& id : IDs)
+				cout << id << pipes[id];
+			break;
+		}
+		default:
+		{
+			cout << "Error! Please try again!" << endl;
+		}
+	}
+}
+
+void Filter_For_KS(unordered_map <int, KS>& kss)
+{
+	if (kss.size() == 0)
+		return;
+	cout << "What do you want to do?" << endl
+		<< "Enter 1 if you want to filter by name." << endl
+		<< "Enter 2 if you want to filter by number of workshops." << endl;
+	switch (Get_Correct_Number(1, 2))
+		{
+		case 1:
+		{
+			string name;
+			cin >> ws;
+			cout << "Please, enter ks name: ";
+			cin.ignore(2000, '\n');
+			getline(cin, name);
+			vector <int> IDs = Find_By_Filter(kss, Check_By_Name, name);
+			for (auto& id : IDs)
+				cout << id << kss[id];
+			break;
+		}
+		case 2:
+		{
+			cout << "Please, enter the percentage of unused workshops: ";
+			double percent = Get_Correct_Number(0.0, 100.0);
+			vector <int> IDs = Find_By_Filter(kss, Check_By_Number_Of_Workshops, percent);
+			for (auto& id : IDs)
+				cout << id << kss[id];
+			break;
+		}
+		default:
+		{
+			cout << "Error! Please try again!" << endl;
+		}
+	}
+}
+
 int main()
 {
 	unordered_map  <int, PIPE> pipes = {};
@@ -136,18 +218,18 @@ int main()
 	{
 		system("cls");
 		PrintMenu();
-		switch (Get_Correct_Number(0, 9))
+		switch (Get_Correct_Number(0, 10))
 		{
 			case 1:
 			{
 				cin >> pipe;
-				pipes.emplace (pipe.id, pipe);
+				pipes.emplace (pipes.size() + 1, pipe);
 				break;
 			}
 			case 2:
 			{
 				cin >> ks;
-				kss.emplace (ks.id, ks);
+				kss.emplace (kss.size() + 1, ks);
 				break;
 			}
 			case 3: 
@@ -155,14 +237,20 @@ int main()
 				if (pipes.size() != 0)
 				{
 					for (const auto& p : pipes)
+					{
+						cout << p.first;
 						cout << p.second << endl;
+					}
 				}
 				else
 					cout << "No pipe data, please enter it and try again." << endl;
 				if (kss.size() != 0)
 				{
 					for (const auto& k : kss)
+					{
+						cout << k.first;
 						cout << k.second << endl;
+					}
 				}
 				else
 					cout << "No ks data, please enter it and try again." << endl;
@@ -172,26 +260,21 @@ int main()
 			{
 				if (pipes.size() != 0)
 				{
-					cout << "Do you want to edit all pipes or one? Please, enter 1 if all pipes or 2 if one pipe: ";
+					cout << "Do you want to edit all pipes or one? Please, enter 1 if all pipes or 2 if multiple pipe: ";
 					switch (Get_Correct_Number(1, 2))
 					{
 						case 1:
 						{
-							if (pipes.size() != 0)
-							{
-								for (auto& p : pipes)
-									PIPE::Edit_Pipe(p.second);
-							}
-							else
-								cout << "No pipe data, please enter it and try again." << endl;
+							for (auto& p : pipes)
+								PIPE::Edit_Pipe(p.second);
 							break;
 						}
 						case 2:
 						{
-							if (pipes.size() != 0)
+							cout << "How many pipes do you want to edit? Please, enter integer value of pipes (1, " << pipes.size() << "):";
+							int n = Get_Correct_Number(1u, pipes.size());
+							for (int i = 0; i < n; i++)
 								PIPE::Edit_Pipe(Select(pipes));
-							else
-								cout << "No pipe data, please enter it and try again." << endl;
 							break;
 						}
 					}
@@ -202,10 +285,29 @@ int main()
 			}
 			case 5:
 			{
-				if (kss.size() != 0)
-					KS::Edit_KS(Select(kss));
-				else 
-					cout << "No KS information, fill in the data an try again." << endl;
+				if (kss.size() != 0 != 0)
+				{
+					cout << "Do you want to edit all kss or one? Please, enter 1 if all kss or 2 if multiple ks: ";
+					switch (Get_Correct_Number(1, 2))
+					{
+						case 1:
+						{
+							for (auto& k : kss)
+								KS::Edit_KS(k.second);
+							break;
+						}
+						case 2:
+						{
+							cout << "How many kss do you want to edit? Please, enter integer value of kss (1, " << kss.size() << "):";
+							int n = Get_Correct_Number(1u, kss.size());
+							for (int i = 0; i < n; i++)
+								KS::Edit_KS(Select(kss));
+							break;
+						}
+					}
+				}
+				else
+					cout << "No ks data, please enter it and try again." << endl;
 				break;
 			}
 			case 6:
@@ -257,12 +359,26 @@ int main()
 			}
 			case 10:
 			{
-				/*string name = "Unknown";
-				for (int i : Find_By_Filter(pipes, Check_By_Repair, name))
-					cout << pipes[i];
-
-				for (int i : Find_By_Filter(kss, Check_By_Name, name))
-					cout << kss[i];*/
+				cout << "What do you want to do?" << endl
+					<< "Enter 1 if you want to filter pipes." << endl
+					<< "Enter 2 if you want to filter KS." << endl;
+				switch (Get_Correct_Number(1,2))
+				{
+					case 1:
+					{
+						Filter_For_PIPE(pipes);
+						break;
+					}
+					case 2:
+					{
+						Filter_For_KS(kss);
+						break;
+					}
+					default:
+					{
+						cout << "Error! Please try again!" << endl;
+					}
+				}
 				break;
 			}
 			case 0:
