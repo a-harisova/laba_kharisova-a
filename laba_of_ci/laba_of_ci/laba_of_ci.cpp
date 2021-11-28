@@ -32,17 +32,48 @@ void Input_From_File(ifstream& fin, unordered_map <int, PIPE>& pipes, unordered_
 {
 	PIPE pipe;
 	KS ks;
+	int kol = 0;
 	int pipes_size, kss_size;
 	fin >> pipes_size >> kss_size;
 	for (int i = 1; i <= pipes_size; i++)
 	{
 		fin >> pipe;
-		pipes.emplace(pipes.size() + 1, pipe);
+		for (auto& [id, p] : pipes)
+		{
+			if (pipe.GetID() == id)
+			{
+				kol++;
+			}
+		}
+		if (kol == 0)
+		{
+			pipe.MaxID++;
+			pipes.emplace(pipe.MaxID, pipe);
+		}
+		else 
+		{
+			kol = 0;
+		}
 	}
 	for (int i = 1; i <= kss_size; i++)
 	{
 		fin >> ks;
-		kss.emplace(kss.size() + 1, ks);
+		for (auto& [id, k] : kss)
+		{
+			if (ks.GetID() == id)
+			{
+				kol++;
+			}
+		}
+		if (kol == 0)
+		{
+			ks.MaxID++;
+			kss.emplace(ks.MaxID, ks);
+		}
+		else 
+		{
+			kol = 0;
+		}
 	}
 }
 
@@ -189,13 +220,13 @@ int main()
 			case 1:
 			{
 				cin >> pipe;
-				pipes.emplace (pipes.size() + 1, pipe);
+				pipes.emplace (pipe.MaxID, pipe);
 				break;
 			}
 			case 2:
 			{
 				cin >> ks;
-				kss.emplace (kss.size() + 1, ks);
+				kss.emplace (ks.MaxID, ks);
 				break;
 			}
 			case 3: 

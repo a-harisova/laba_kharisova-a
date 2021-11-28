@@ -9,6 +9,7 @@ class KS
 	int number_of_workshops;
 	int number_of_working_workshops;
 public:
+	static int MaxID;
 	std::string name;
 	double efficiency;
 

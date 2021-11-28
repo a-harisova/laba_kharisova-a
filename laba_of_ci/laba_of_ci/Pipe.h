@@ -7,6 +7,7 @@ class PIPE
 {
 	int id;
 public:
+	static int MaxID;
 	std::string name;
 	double length;
 	int diameter;

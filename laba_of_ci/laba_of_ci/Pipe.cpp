@@ -2,7 +2,7 @@
 #include"Utils.h"
 
 using namespace std;
-int kol_pipe = 1;
+int PIPE::MaxID = 0;
 
 int PIPE::GetID() const
 {
@@ -11,8 +11,7 @@ int PIPE::GetID() const
 
 void PIPE::SetID()
 {
-	id = kol_pipe;
-	kol_pipe++;
+	id = ++MaxID;
 }
 
 std::ostream& operator << (std::ostream& out, const PIPE& pipe)
@@ -30,7 +29,7 @@ std::ostream& operator << (std::ostream& out, const PIPE& pipe)
 
 std::istream& operator >> (std::istream& in, PIPE& pipe)
 {
-	pipe.id;
+	pipe.SetID();
 	cout << "Please enter the name of the pipe: ";
 	cin.ignore(2000, '\n');
 	getline(cin, pipe.name);

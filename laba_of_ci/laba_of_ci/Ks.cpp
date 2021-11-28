@@ -2,7 +2,7 @@
 #include "Utils.h"
 
 using namespace std;
-int kol_ks = 1;
+int KS::MaxID = 0;
 
 std::ostream& operator << (std::ostream& out, const KS& ks)
 {
@@ -17,17 +17,17 @@ std::ostream& operator << (std::ostream& out, const KS& ks)
 
 std::istream& operator >> (std::istream& in, KS& ks)
 {
-	ks.id;
+	ks.SetID();
 	cout << "Please enter the name of compressor station: ";
 	cin.ignore(2000, '\n');
 	getline(cin, ks.name);
 	cout << "Please enter the integer value of workshops of the compressor station: ";
-	ks.number_of_workshops;
+	ks.number_of_workshops = Get_Correct_Number(0, 1000000);
 	do
 	{
 		cout << "Please enter the integer value of workshops of the compressor station, that are currently operating. " << endl
 			<< "The number must be less than value of workshops of the compressor station!: ";
-		ks.number_of_working_workshops;
+		ks.number_of_working_workshops = Get_Correct_Number(0, 1000000);
 	} while (ks.number_of_workshops < ks.number_of_working_workshops);
 	ks.efficiency = rand() % 100;
 	return in;
@@ -60,8 +60,7 @@ int KS::GetID() const
 
 void KS::SetID()
 {
-	id = kol_ks;
-	kol_ks++;
+	id = ++MaxID;
 }
 
 int KS::GetNumbOfWorkshops() const
