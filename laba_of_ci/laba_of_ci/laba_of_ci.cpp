@@ -28,24 +28,6 @@ void PrintMenu()
 		 << "Choose action, please: ";
 }
 
-void Output_In_File_Pipe(ofstream& fout, const PIPE pipe)
-{
-	fout << pipe.GetID() << endl
-		<< pipe.name << endl
-		<< pipe.length << endl
-		<< pipe.diameter << endl
-		<< pipe.GetRepair() << endl;
-}
-
-void Output_In_File_KS(ofstream& fout, const KS ks)
-{
-	fout << ks.GetID() << endl
-		 << ks.name << endl
-		 << ks.GetNumbOfWorkshops() << endl
-		 << ks.GetNumbOfWorkWorkshops() << endl
-		 << ks.efficiency << endl;
-}
-
 void Input_From_File(ifstream& fin, unordered_map <int, PIPE>& pipes, unordered_map <int, KS>& kss)
 {
 	PIPE pipe;
@@ -54,28 +36,12 @@ void Input_From_File(ifstream& fin, unordered_map <int, PIPE>& pipes, unordered_
 	fin >> pipes_size >> kss_size;
 	for (int i = 1; i <= pipes_size; i++)
 	{
-		int ID; 
-		bool Repair;
-		fin >> ID;
-		pipe.SetIDFromFile(ID);
-		fin >> pipe.name;
-		fin >> pipe.length;
-		fin >> pipe.diameter;
-		fin >> Repair;
-		pipe.SetRepairFromFile(Repair);
+		fin >> pipe;
 		pipes.emplace(pipes.size() + 1, pipe);
 	}
 	for (int i = 1; i <= kss_size; i++)
 	{
-		int ID, Number;
-		fin >> ID;
-		ks.SetIDFromFile(ID);
-		fin >> ks.name;
-		fin >> Number;
-		ks.SetNumbOfWorkshopsInFile(Number);
-		fin >> Number;
-		ks.SetNumbOfWorkWorkshopsInFile(Number);
-		fin >> ks.efficiency;
+		fin >> ks;
 		kss.emplace(kss.size() + 1, ks);
 	}
 }
@@ -115,7 +81,7 @@ bool Check_By_Name(const type& smth, string param)
 }
 bool Check_By_Repair(const PIPE& smth, bool param)
 {
-	return smth.GetRepair() != param;
+	return smth.repair != param;
 }
 bool Check_By_Number_Of_Workshops(const KS& smth, double param)
 {
@@ -236,20 +202,20 @@ int main()
 			{
 				if (pipes.size() != 0)
 				{
-					for (const auto& p : pipes)
+					for (const auto& [id, p]: pipes)
 					{
-						cout << p.first;
-						cout << p.second << endl;
+						cout << id;
+						cout << p << endl;
 					}
 				}
 				else
 					cout << "No pipe data, please enter it and try again." << endl;
 				if (kss.size() != 0)
 				{
-					for (const auto& k : kss)
+					for (const auto& [id, k] : kss)
 					{
-						cout << k.first;
-						cout << k.second << endl;
+						cout << id;
+						cout << k << endl;
 					}
 				}
 				else
@@ -265,8 +231,8 @@ int main()
 					{
 						case 1:
 						{
-							for (auto& p : pipes)
-								PIPE::Edit_Pipe(p.second);
+							for (auto& [id, p] : pipes)
+								PIPE::Edit_Pipe(p);
 							break;
 						}
 						case 2:
@@ -292,8 +258,8 @@ int main()
 					{
 						case 1:
 						{
-							for (auto& k : kss)
-								KS::Edit_KS(k.second);
+							for (auto& [id, k] : kss)
+								KS::Edit_KS(k);
 							break;
 						}
 						case 2:
@@ -314,17 +280,18 @@ int main()
 			{
 				cout << "Please, enter the file name: ";
 				string filename;
-				cin >> filename;
+				cin >> ws;
+				getline(cin, filename);
 				ofstream fout;
 				fout.open(filename);
 				if (fout.is_open())
 				{
 					fout << pipes.size() << endl;
 					fout << kss.size() << endl;
-					for (const auto& p : pipes)
-						Output_In_File_Pipe(fout, p.second);
-					for (const auto& k : kss)
-						Output_In_File_KS(fout, k.second);
+					for (const auto& [id, p] : pipes)
+						fout << p;
+					for (const auto& [id, k] : kss)
+						fout << k;
 					fout.close();
 				}
 				else

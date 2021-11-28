@@ -1,25 +1,24 @@
 #pragma once
 #include <string>
 #include <iostream>
+#include <fstream>
 
 class PIPE
 {
 	int id;
-	bool repair = false;
 public:
 	std::string name;
 	double length;
 	int diameter;
+	bool repair;
 
 	int GetID() const;
 	void SetID();
-	void SetIDFromFile(int);
-	bool GetRepair() const;
-	void SetRepair();
-	void SetRepairFromFile(bool);
 
 	friend std::ostream& operator << (std::ostream& out, const PIPE& pipe);
 	friend std::istream& operator >> (std::istream& in, PIPE& pipe);
+	friend std::ofstream& operator << (std::ofstream& out, const PIPE& pipe);
+	friend std::ifstream& operator >> (std::ifstream& in, PIPE& pipe);
 	static void Edit_Pipe(PIPE& pipe);
 };
 

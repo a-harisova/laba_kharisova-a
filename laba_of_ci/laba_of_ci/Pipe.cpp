@@ -15,26 +15,6 @@ void PIPE::SetID()
 	kol_pipe++;
 }
 
-void PIPE::SetIDFromFile(int NewID)
-{
-	id = NewID;
-}
-
-bool PIPE::GetRepair() const
-{
-	return repair;
-}
-
-void PIPE::SetRepair()
-{
-	repair = false;
-}
-
-void PIPE::SetRepairFromFile(bool NewRepair)
-{
-	repair = NewRepair;
-}
-
 std::ostream& operator << (std::ostream& out, const PIPE& pipe)
 {
 	out << " PIPE INFORMATION: " << endl
@@ -50,7 +30,7 @@ std::ostream& operator << (std::ostream& out, const PIPE& pipe)
 
 std::istream& operator >> (std::istream& in, PIPE& pipe)
 {
-	pipe.SetID();
+	pipe.id;
 	cout << "Please enter the name of the pipe: ";
 	cin.ignore(2000, '\n');
 	getline(cin, pipe.name);
@@ -58,7 +38,27 @@ std::istream& operator >> (std::istream& in, PIPE& pipe)
 	pipe.length = Get_Correct_Number(0.0, 1000000.0);
 	cout << "What is the diameter of the pipe? Please enter an integer value: ";
 	pipe.diameter = Get_Correct_Number(0, 1000000);
-	pipe.SetRepair();
+	pipe.repair = false;
+	return in;
+}
+
+std::ofstream& operator << (std::ofstream& out, const PIPE& pipe)
+{
+	out << pipe.GetID() << endl
+		<< pipe.name << endl
+		<< pipe.length << endl
+		<< pipe.diameter << endl
+		<< pipe.repair << endl;
+	return out;
+}
+
+std::ifstream& operator >> (std::ifstream& in, PIPE& pipe)
+{
+	in >> pipe.id;
+	in >> pipe.name;
+	in >> pipe.length;
+	in >> pipe.diameter;
+	in >> pipe.repair;
 	return in;
 }
 

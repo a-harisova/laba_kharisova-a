@@ -17,19 +17,39 @@ std::ostream& operator << (std::ostream& out, const KS& ks)
 
 std::istream& operator >> (std::istream& in, KS& ks)
 {
-	ks.SetID();
+	ks.id;
 	cout << "Please enter the name of compressor station: ";
 	cin.ignore(2000, '\n');
 	getline(cin, ks.name);
 	cout << "Please enter the integer value of workshops of the compressor station: ";
-	ks.SetNumbOfWorkshops();
+	ks.number_of_workshops;
 	do
 	{
 		cout << "Please enter the integer value of workshops of the compressor station, that are currently operating. " << endl
 			<< "The number must be less than value of workshops of the compressor station!: ";
-		ks.SetNumbOfWorkWorkshops();
+		ks.number_of_working_workshops;
 	} while (ks.number_of_workshops < ks.number_of_working_workshops);
 	ks.efficiency = rand() % 100;
+	return in;
+}
+
+std::ofstream& operator << (std::ofstream& out, const KS& ks)
+{
+	out << ks.id << endl
+		<< ks.name << endl
+		<< ks.number_of_workshops << endl
+		<< ks.number_of_working_workshops << endl
+		<< ks.efficiency << endl;
+	return out;
+}
+
+std::ifstream& operator >> (std::ifstream& in, KS& ks)
+{
+	in >> ks.id;
+	in >> ks.name;
+	in >> ks.number_of_workshops;
+	in >> ks.number_of_working_workshops;
+	in >> ks.efficiency;
 	return in;
 }
 
@@ -44,11 +64,6 @@ void KS::SetID()
 	kol_ks++;
 }
 
-void KS::SetIDFromFile(int NewID)
-{
-	id = NewID;
-}
-
 int KS::GetNumbOfWorkshops() const
 {
 	return number_of_workshops;
@@ -59,11 +74,6 @@ void KS::SetNumbOfWorkshops()
 	number_of_workshops = Get_Correct_Number(0, 1000000);
 }
 
-void KS::SetNumbOfWorkshopsInFile(int NewNumber)
-{
-	number_of_workshops = NewNumber;
-}
-
 int KS::GetNumbOfWorkWorkshops() const
 {
 	return number_of_working_workshops;
@@ -72,11 +82,6 @@ int KS::GetNumbOfWorkWorkshops() const
 void KS::SetNumbOfWorkWorkshops()
 {
 	number_of_working_workshops = Get_Correct_Number(0, 1000000);
-}
-
-void KS::SetNumbOfWorkWorkshopsInFile(int NewNumber)
-{
-	number_of_working_workshops = NewNumber;
 }
 
 void KS::Edit_KS(KS& ks)

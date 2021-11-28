@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <iostream>
+#include <fstream>
 
 class KS
 {
@@ -13,16 +14,15 @@ public:
 
 	int GetID() const;
 	void SetID();
-	void SetIDFromFile(int);
 	int GetNumbOfWorkshops() const;
 	void SetNumbOfWorkshops();
-	void SetNumbOfWorkshopsInFile(int);
 	int GetNumbOfWorkWorkshops() const;
 	void SetNumbOfWorkWorkshops();
-	void SetNumbOfWorkWorkshopsInFile(int);
 
 	friend std::ostream& operator << (std::ostream& out, const KS& ks);
 	friend std::istream& operator >> (std::istream& in, KS& ks);
+	friend std::ofstream& operator << (std::ofstream& out, const KS& ks);
+	friend std::ifstream& operator >> (std::ifstream& in, KS& ks);
 	static void Edit_KS(KS& ks);
 };
 
