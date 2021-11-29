@@ -149,7 +149,12 @@ void Filter_For_PIPE(unordered_map <int, PIPE>& pipes)
 			getline(cin, name);
 			vector <int> IDs = Find_By_Filter(pipes, Check_By_Name, name);
 			for (auto& id : IDs)
-				cout << id << pipes[id];
+				cout << id << pipes[id] << endl;
+			cout << "Do you want delete pipes? Please, enter 1 if yes and 0 if no: ";
+			bool number = Get_Correct_Number(0, 1);
+			if (number)
+				for (auto& id : IDs)
+					pipes.erase(id);
 			break;
 		}
 		case 2:
@@ -158,7 +163,12 @@ void Filter_For_PIPE(unordered_map <int, PIPE>& pipes)
 			bool repair = Get_Correct_Number(0, 1);
 			vector <int> IDs = Find_By_Filter(pipes, Check_By_Repair, repair);
 			for (auto& id : IDs)
-				cout << id << pipes[id];
+				cout << id << pipes[id] << endl;
+			cout << "Do you want delete pipes? Please, enter 1 if yes and 0 if no: ";
+			bool number = Get_Correct_Number(0, 1);
+			if (number)
+				for (auto& id : IDs)
+					pipes.erase(id);
 			break;
 		}
 		default:
@@ -186,7 +196,12 @@ void Filter_For_KS(unordered_map <int, KS>& kss)
 			getline(cin, name);
 			vector <int> IDs = Find_By_Filter(kss, Check_By_Name, name);
 			for (auto& id : IDs)
-				cout << id << kss[id];
+				cout << id << kss[id] << endl;
+			cout << "Do you want delete kss? Please, enter 1 if yes and 0 if no: ";
+			bool number = Get_Correct_Number(0, 1);
+			if (number)
+				for (auto& id : IDs)
+					kss.erase(id);
 			break;
 		}
 		case 2:
@@ -195,7 +210,12 @@ void Filter_For_KS(unordered_map <int, KS>& kss)
 			double percent = Get_Correct_Number(0.0, 100.0);
 			vector <int> IDs = Find_By_Filter(kss, Check_By_Number_Of_Workshops, percent);
 			for (auto& id : IDs)
-				cout << id << kss[id];
+				cout << id << kss[id] << endl;
+			cout << "Do you want delete kss? Please, enter 1 if yes and 0 if no: ";
+			bool number = Get_Correct_Number(0, 1);
+			if (number)
+				for (auto& id : IDs)
+					kss.erase(id);
 			break;
 		}
 		default:
