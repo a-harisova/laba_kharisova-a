@@ -2,6 +2,7 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <set>
 
 class KS
 {
@@ -13,17 +14,19 @@ public:
 	std::string name;
 	double efficiency;
 
+	set <int> ConnectedPIPE;
+
 	int GetID() const;
 	void SetID();
 	int GetNumbOfWorkshops() const;
 	void SetNumbOfWorkshops();
 	int GetNumbOfWorkWorkshops() const;
 	void SetNumbOfWorkWorkshops();
+	void Edit_KS();
 
 	friend std::ostream& operator << (std::ostream& out, const KS& ks);
 	friend std::istream& operator >> (std::istream& in, KS& ks);
 	friend std::ofstream& operator << (std::ofstream& out, const KS& ks);
 	friend std::ifstream& operator >> (std::ifstream& in, KS& ks);
-	static void Edit_KS(KS& ks);
 };
 

@@ -140,11 +140,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="GTS.cpp" />
     <ClCompile Include="Ks.cpp" />
     <ClCompile Include="laba_of_ci.cpp" />
     <ClCompile Include="Pipe.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GTS.h" />
     <ClInclude Include="Ks.h" />
     <ClInclude Include="Pipe.h" />
     <ClInclude Include="Utils.h" />

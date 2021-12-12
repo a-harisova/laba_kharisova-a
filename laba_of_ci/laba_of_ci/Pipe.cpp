@@ -61,8 +61,9 @@ std::ifstream& operator >> (std::ifstream& in, PIPE& pipe)
 	return in;
 }
 
-void PIPE::Edit_Pipe(PIPE& pipe)
+void PIPE::Edit_Pipe()
 {
-	pipe.repair = (!pipe.repair);
+	repair = (!repair);
 }
+
 

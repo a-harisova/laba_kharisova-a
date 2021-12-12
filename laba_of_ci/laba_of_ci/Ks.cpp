@@ -83,7 +83,7 @@ void KS::SetNumbOfWorkWorkshops()
 	number_of_working_workshops = Get_Correct_Number(0, 1000000);
 }
 
-void KS::Edit_KS(KS& ks)
+void KS::Edit_KS()
 {
 	cout << "What do you want to do?" << endl
 		<< "Enter 1 if you want to create a new workshop." << endl
@@ -93,30 +93,31 @@ void KS::Edit_KS(KS& ks)
 	{
 	case 1:
 	{
-		ks.number_of_workshops++;
+		number_of_workshops++;
 		break;
 	}
 	case 2:
 	{
-		if (ks.number_of_workshops == ks.number_of_working_workshops)
+		if (number_of_workshops == number_of_working_workshops)
 			cout << "\nIt is impossible to start the existing workshop, since all the workshops are working." << endl << endl;
 		else
-			ks.number_of_working_workshops++;
+			number_of_working_workshops++;
 		break;
 	}
 	case 3:
 	{
-		if (ks.GetNumbOfWorkWorkshops() == 0)
+		if (number_of_working_workshops == 0)
 			cout << "\nIt is impossible to stop the existing workshop, since all the workshops aren't working." << endl << endl;
 		else
-			ks.number_of_working_workshops--;
+			number_of_working_workshops--;
 		break;
 	}
 	default:
 	{
 		system("cls");
 		cout << "Error!" << endl;
-		KS::Edit_KS(ks);
+		Edit_KS();
 	}
 	}
 }
+
