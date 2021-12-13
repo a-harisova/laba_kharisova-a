@@ -2,11 +2,6 @@
 
 using namespace std;
 
-GTS::GTS() : pipes(), kss()
-{
-
-}
-
 void GTS::InputPipe()
 {
 	PIPE pipe;
@@ -67,7 +62,11 @@ void GTS::EditPipes()
 			cout << "How many pipes do you want to edit? Please, enter integer value of pipes (1, " << pipes.size() << "):";
 			int n = Get_Correct_Number(1u, pipes.size());
 			for (int i = 0; i < n; i++)
-				Select(pipes).Edit_Pipe();
+			{
+				cout << "Please enter index (1, " << pipes.size() << "): ";
+				unsigned int index = Get_Correct_Number(1u, pipes.size());
+				pipes[index].Edit_Pipe();
+			}
 			break;
 		}
 		}
@@ -78,7 +77,7 @@ void GTS::EditPipes()
 
 void GTS::EditKSs()
 {
-	if (kss.size() != 0 != 0)
+	if (kss.size() != 0)
 	{
 		cout << "Do you want to edit all kss or multiple? Please, enter 1 if all kss or 2 if multiple ks: ";
 		switch (Get_Correct_Number(1, 2))
@@ -94,7 +93,11 @@ void GTS::EditKSs()
 			cout << "How many kss do you want to edit? Please, enter integer value of kss (1, " << kss.size() << "):";
 			int n = Get_Correct_Number(1u, kss.size());
 			for (int i = 0; i < n; i++)
-				Select(kss).Edit_KS();
+			{
+				cout << "Please enter index (1, " << kss.size() << "): ";
+				unsigned int index = Get_Correct_Number(1u, kss.size());
+				kss[index].Edit_KS();
+			}
 			break;
 		}
 		}
@@ -178,7 +181,7 @@ void GTS::Dowload(string filename)
 		cout << "File didn't open! Please, try again.";
 }
 
-void GTS::Filter_For_PIPE(unordered_map<int, PIPE>& pipes)
+void GTS::Filter_For_PIPE()
 {
 	if (pipes.size() == 0)
 		return;
@@ -225,7 +228,7 @@ void GTS::Filter_For_PIPE(unordered_map<int, PIPE>& pipes)
 	}
 }
 
-void GTS::Filter_For_KS(unordered_map<int, KS>& kss)
+void GTS::Filter_For_KS()
 {
 	if (kss.size() == 0)
 		return;
@@ -270,4 +273,28 @@ void GTS::Filter_For_KS(unordered_map<int, KS>& kss)
 		cout << "Error! Please try again!" << endl;
 	}
 	}
+}
+
+void GTS::DeletePipe()
+{
+	if (pipes.size())
+	{
+		cout << "Please, enter the index(1 - " << pipes.size() << "): ";
+		int index = Get_Correct_Number(1u, pipes.size());
+		pipes.erase(index);
+	}
+	else
+		cout << "Impossible to remove, since it hasn't yet been entered." << endl;
+}
+
+void GTS::DeleteKS()
+{
+	if (kss.size())
+	{
+		cout << "Please, enter the index(1 - " << kss.size() << "): ";
+		int index = Get_Correct_Number(1u, kss.size());
+		kss.erase(index);
+	}
+	else
+		cout << "Impossible to remove, since it hasn't yet been entered." << endl;
 }

@@ -31,127 +31,6 @@ void PrintMenu()
 		 << "Choose action, please: ";
 }
 
-//template <typename type>
-//type& Select(unordered_map  <int, type>& smth)
-//{
-//	if (smth.size() == 0)
-//		cout << "Error! No data entered" << endl;
-//	else
-//	{
-//		cout << "Please enter index (1, " << smth.size() << "): ";
-//		unsigned int index = Get_Correct_Number(1u, smth.size());
-//		return smth[index];
-//	}
-//}
-//
-//template <typename type>
-//void Delete(unordered_map  <int, type>& smth)
-//{
-//	if (smth.size())
-//	{
-//		cout << "Please, enter the index(1 - " << smth.size() << "): ";
-//		int index = Get_Correct_Number(1u, smth.size());
-//		smth.erase(index);
-//	}
-//	else
-//		cout << "Impossible to remove, since it hasn't yet been entered." << endl;
-//}
-
-
-//void Filter_For_PIPE(unordered_map <int, PIPE>& pipes)
-//{
-//	if (pipes.size() == 0)
-//		return;
-//	cout << "What do you want to do?" << endl
-//		<< "Enter 1 if you want to filter by name." << endl
-//		<< "Enter 2 if you want to filter by repair." << endl;
-//	switch (Get_Correct_Number(1, 2))
-//	{
-//		case 1:
-//		{
-//			string name;
-//			cin >> ws;
-//			cin.ignore(2000, '\n');
-//			cout << "Please, enter pipe name: ";
-//			getline(cin, name);
-//			vector <int> IDs = Find_By_Filter(pipes, Check_By_Name, name);
-//			for (auto& id : IDs)
-//				cout << id << pipes[id] << endl;
-//			cout << "Do you want delete pipes? Please, enter 1 if yes and 0 if no: ";
-//			bool number = Get_Correct_Number(0, 1);
-//			if (number)
-//				for (auto& id : IDs)
-//					pipes.erase(id);
-//			break;
-//		}
-//		case 2:
-//		{
-//			cout << "Please, enter 0 if pipes don't work and 1 if pipes work: ";
-//			bool repair = Get_Correct_Number(0, 1);
-//			vector <int> IDs = Find_By_Filter(pipes, Check_By_Repair, repair);
-//			for (auto& id : IDs)
-//				cout << id << pipes[id] << endl;
-//			cout << "Do you want delete pipes? Please, enter 1 if yes and 0 if no: ";
-//			bool number = Get_Correct_Number(0, 1);
-//			if (number)
-//				for (auto& id : IDs)
-//					pipes.erase(id);
-//			break;
-//		}
-//		default:
-//		{
-//			cout << "Error! Please try again!" << endl;
-//		}
-//	}
-//}
-
-//void Filter_For_KS(unordered_map <int, KS>& kss)
-//{
-//	if (kss.size() == 0)
-//		return;
-//	cout << "What do you want to do?" << endl
-//		<< "Enter 1 if you want to filter by name." << endl
-//		<< "Enter 2 if you want to filter by number of workshops." << endl;
-//	switch (Get_Correct_Number(1, 2))
-//		{
-//		case 1:
-//		{
-//			string name;
-//			cin >> ws;
-//			cout << "Please, enter ks name: ";
-//			cin.ignore(2000, '\n');
-//			getline(cin, name);
-//			vector <int> IDs = Find_By_Filter(kss, Check_By_Name, name);
-//			for (auto& id : IDs)
-//				cout << id << kss[id] << endl;
-//			cout << "Do you want delete kss? Please, enter 1 if yes and 0 if no: ";
-//			bool number = Get_Correct_Number(0, 1);
-//			if (number)
-//				for (auto& id : IDs)
-//					kss.erase(id);
-//			break;
-//		}
-//		case 2:
-//		{
-//			cout << "Please, enter the percentage of unused workshops: ";
-//			double percent = Get_Correct_Number(0.0, 100.0);
-//			vector <int> IDs = Find_By_Filter(kss, Check_By_Number_Of_Workshops, percent);
-//			for (auto& id : IDs)
-//				cout << id << kss[id] << endl;
-//			cout << "Do you want delete kss? Please, enter 1 if yes and 0 if no: ";
-//			bool number = Get_Correct_Number(0, 1);
-//			if (number)
-//				for (auto& id : IDs)
-//					kss.erase(id);
-//			break;
-//		}
-//		default:
-//		{
-//			cout << "Error! Please try again!" << endl;
-//		}
-//	}
-//}
-
 int main()
 {
 	GTS gts;
@@ -202,17 +81,17 @@ int main()
 				string filename;
 				cin >> ws;
 				getline(cin, filename);
-				gts.Dowlonad(filename);
+				gts.Dowload(filename);
 				break;
 			}
 			case 8:
 			{
-				Delete(pipes);
+				gts.DeletePipe();
 				break;
 			}
 			case 9:
 			{
-				Delete(kss);
+				gts.DeleteKS();
 				break;
 			}
 			case 10:
@@ -224,12 +103,12 @@ int main()
 				{
 					case 1:
 					{
-						Filter_For_PIPE(pipes);
+						gts.Filter_For_PIPE();
 						break;
 					}
 					case 2:
 					{
-						Filter_For_KS(kss);
+						gts.Filter_For_KS();
 						break;
 					}
 					default:

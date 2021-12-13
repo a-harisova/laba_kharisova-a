@@ -10,11 +10,12 @@
 #include "Ks.h"
 #include "Utils.h"
 
+using namespace std;
+
 class GTS
 {
 	unordered_map  <int, PIPE> pipes = {};
 	unordered_map  <int, KS> kss = {};
-	map <int, int> SortNumberKS;
 public :
 	struct Connect
 	{
@@ -29,35 +30,11 @@ public :
 	void EditKSs();
 	void Save(const string &filename);
 	void Dowload(string filename);
-	void Filter_For_PIPE(unordered_map <int, PIPE>& pipes);
-	void Filter_For_KS(unordered_map <int, KS>& kss);
+	void Filter_For_PIPE();
+	void Filter_For_KS();
+	void DeletePipe();
+	void DeleteKS();
 };
-
-template <typename type>
-type& Select(unordered_map  <int, type>& smth)
-{
-	if (smth.size() == 0)
-		cout << "Error! No data entered" << endl;
-	else
-	{
-		cout << "Please enter index (1, " << smth.size() << "): ";
-		unsigned int index = Get_Correct_Number(1u, smth.size());
-		return smth[index];
-	}
-}
-
-template <typename type>
-void Delete(unordered_map  <int, type>& smth)
-{
-	if (smth.size())
-	{
-		cout << "Please, enter the index(1 - " << smth.size() << "): ";
-		int index = Get_Correct_Number(1u, smth.size());
-		smth.erase(index);
-	}
-	else
-		cout << "Impossible to remove, since it hasn't yet been entered." << endl;
-}
 
 template <typename type, typename type_param>
 using Filter = bool(*)(const type& smth, type_param param);
@@ -86,3 +63,4 @@ vector <int> Find_By_Filter(const unordered_map <int, type>& map, Filter <type, 
 	}
 	return res;
 }
+

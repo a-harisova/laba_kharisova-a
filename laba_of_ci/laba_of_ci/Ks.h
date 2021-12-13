@@ -14,7 +14,7 @@ public:
 	std::string name;
 	double efficiency;
 
-	set <int> ConnectedPIPE;
+	std::set <int> ConnectedPIPE;
 
 	int GetID() const;
 	void SetID();

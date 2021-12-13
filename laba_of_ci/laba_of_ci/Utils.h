@@ -16,3 +16,4 @@ type Get_Correct_Number(type min, type max)
 	return value;
 };
 
+
