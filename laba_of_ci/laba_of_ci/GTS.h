@@ -9,6 +9,7 @@
 #include "Pipe.h"
 #include "Ks.h"
 #include "Utils.h"
+#include "Filter.h"
 
 using namespace std;
 
@@ -30,9 +31,9 @@ public :
 	void EditKSs();
 	void Save(const string &filename);
 	void Dowload(string filename);
+	void Filter_For_PIPE();
+	void Filter_For_KS();
 	void DeletePipe();
 	void DeleteKS();
 };
-
-
 

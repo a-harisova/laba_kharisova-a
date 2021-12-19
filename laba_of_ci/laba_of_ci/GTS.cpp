@@ -181,6 +181,16 @@ void GTS::Dowload(string filename)
 		cout << "File didn't open! Please, try again.";
 }
 
+void GTS::Filter_For_PIPE()
+{
+	PipeFilter(pipes);
+}
+
+void GTS::Filter_For_KS()
+{
+	KSFilter(kss);
+}
+
 
 
 void GTS::DeletePipe()
