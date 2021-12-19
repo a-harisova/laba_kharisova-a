@@ -24,6 +24,7 @@ std::ostream& operator << (std::ostream& out, const PIPE& pipe)
 	if (pipe.repair)
 		out << "Repairs needed - yes" << endl;
 	else out << "Repairs needed - no" << endl;
+	
 	return out;
 }
 
@@ -47,7 +48,9 @@ std::ofstream& operator << (std::ofstream& out, const PIPE& pipe)
 		<< pipe.name << endl
 		<< pipe.length << endl
 		<< pipe.diameter << endl
-		<< pipe.repair << endl;
+		<< pipe.repair << endl
+		<< pipe.in << endl
+		<< pipe.out << endl;
 	return out;
 }
 
@@ -58,12 +61,50 @@ std::ifstream& operator >> (std::ifstream& in, PIPE& pipe)
 	in >> pipe.length;
 	in >> pipe.diameter;
 	in >> pipe.repair;
+	in >> pipe.in;
+	in >> pipe.out;
 	return in;
 }
 
 void PIPE::Edit_Pipe()
 {
 	repair = (!repair);
+}
+
+void PIPE::Connect(int myin, int myout)
+{
+	if (in == 0 && out == 0 && myin != myout) {
+		out = myout;
+		in = myin;
+	}
+	else
+		cout << "Error! Please try again!" << endl;
+}
+
+bool PIPE::CanBeUsed() const
+{
+	return in > 0 && out > 0 && repair == true;
+}
+
+void PIPE::ShowTheConnection(int id) const
+{
+	cout << "Pipe id: " << id << endl
+		<< "KS id, where the pipe enters: " << in << endl
+		<< "KS id, where the pipe comes out: " << out << endl;
+	if (repair)
+		cout << "Repairs needed - yes" << endl;
+	else cout << "Repairs needed - no" << endl;
+}
+
+void PIPE::BreakTheConnection()
+{
+	in = 0;
+	out = 0;
+}
+
+bool PIPE::Connection() const
+{
+	return in > 0 && out > 0;
 }
 
 

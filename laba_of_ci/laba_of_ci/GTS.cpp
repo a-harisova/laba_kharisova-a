@@ -191,8 +191,6 @@ void GTS::Filter_For_KS()
 	KSFilter(kss);
 }
 
-
-
 void GTS::DeletePipe()
 {
 	if (pipes.size())
@@ -215,4 +213,149 @@ void GTS::DeleteKS()
 	}
 	else
 		cout << "Impossible to remove, since it hasn't yet been entered." << endl;
+}
+
+vector<vector<int>> GTS::AddGraph()
+{
+	unordered_map<int, int> VerticesIndex = GetIndexVertices();
+	vector<vector<int>> ribs;
+	ribs.resize(VerticesIndex.size());
+	for (const auto& [i, p] : pipes)
+		if (p.CanBeUsed())
+			ribs[VerticesIndex[p.out]].push_back(VerticesIndex[p.in]);
+	return ribs;
+}
+
+unordered_map<int, int> GTS::GetIndexVertices()
+{
+	set<int> vertices;
+	for (const auto& [i, p] : pipes)
+		if (p.CanBeUsed() && kss.count(p.in) && kss.count(p.out)) {
+			vertices.insert(p.out);
+			vertices.insert(p.in);
+		}
+	unordered_map<int, int> VerticesIndex;
+	int i = 0;
+	for (const int& v : vertices)
+		VerticesIndex.insert({ v, i++ });
+	return VerticesIndex;
+}
+
+unordered_map<int, int> GTS::GetIndexVerticesBack()
+{
+	set<int> vertices;
+	for (const auto& [i, p] : pipes)
+		if (p.CanBeUsed() && kss.count(p.in) && kss.count(p.out)) {
+			vertices.insert(p.out);
+			vertices.insert(p.in);
+		}
+	unordered_map<int, int> VerticesIndex;
+	int i = 0;
+	for (const int& v : vertices)
+		VerticesIndex.insert({ i++, v });
+	return VerticesIndex;
+}
+
+void DepthFirstSearch(int v, vector<char>& cl, vector<int>& p, int& start, const vector<vector<int>>& ribs, vector<int>& result)
+{
+	cl[v] = 1;
+	for (size_t i = 0; i < ribs[v].size(); ++i) {
+		int to = ribs[v][i];
+		if (cl[to] == 0) {
+			p[to] = v;
+			DepthFirstSearch(to, cl, p, start, ribs, result);
+		}
+		else if (cl[to] == 1) {
+			start = to;
+			return;
+		}
+	}
+	result.push_back(v);
+	cl[v] = 2;
+}
+
+void GTS::TopologicalSort(const unordered_map<int, int>& VerticesIndex)
+{
+	int n = ribs.size();
+	vector<int> result;
+	vector<char> cl;
+	vector<int> p;
+	int cycle_start;
+	p.assign(n, -1);
+	cl.assign(n, 0);
+	cycle_start = -1;
+	result.clear();
+	for (int i = 0; i < n; ++i)
+		if (cl[i] != 2)
+			DepthFirstSearch(i, cl, p, cycle_start, ribs, result);
+	if (cycle_start == -1) {
+		reverse(result.begin(), result.end());
+		for (int i = 0; i < result.size(); i++) {
+			cout << " Station " << VerticesIndex.at(result[i]) << " -> ";
+		}
+		cout << endl;
+	}
+	else
+		cout << "Sorting cannot be applied to a graph containing a cycle " << endl;
+}
+
+void GTS::ConnectPipeAndKSs()
+{
+	if (pipes.size() > 0 && kss.size() > 1)
+	{
+		cout << "Please, enter the index of pipe you want to connect: ";
+		int pipeId = Get_Correct_Number(1u, pipes.size());
+		cout << "Please, enter the index of ks where the pipe enters: ";
+		int in = Get_Correct_Number(1u, kss.size());
+		cout << "Please, enter the index of ks where the pipe comes out: " << endl;
+		int out = Get_Correct_Number(1u, kss.size());
+		if (pipes[pipeId].in == 0 && pipes[pipeId].out == 0 && out != in) {
+			pipes[pipeId].Connect(in, out);
+			kss[in].Connect();
+			kss[out].Connect();
+		}
+		else
+			cout << "Error! Please try again!" << endl;
+	}
+	else
+		cout << "Error! No objects to connect! Please try again! " << endl;
+}
+
+void GTS::DisconnectPipeAndKSs()
+{
+	if (pipes.size() > 0 && kss.size() > 1)
+	{
+		ShowConnection();
+		cout << "Please, enter the index of pipe you want to disconnect: " << endl;
+		int pipeId = Get_Correct_Number(1u, pipes.size());
+		if (pipes[pipeId].Connection()) {
+			pipes[pipeId].BreakTheConnection();
+			kss[pipes[pipeId].in].BreakTheConnection();
+			kss[pipes[pipeId].out].BreakTheConnection();
+		}
+	}
+	else
+		cout << "Error! No objects to disconnect! Please try again!" << endl;
+}
+
+void GTS::ShowConnection()
+{
+	if (pipes.size() > 0 && kss.size() > 1) 
+	{
+		for (auto& [id, p] : pipes)
+			if (p.Connection())
+				p.ShowTheConnection(id);
+			else cout << "Pipe " << id << " hasn't connection" << endl;
+	}
+	else cout << "Error! No connection! Please try again!" << endl;
+}
+
+void GTS::Sort()
+{
+	if (pipes.size() > 0 && kss.size() > 1) {
+		ribs = AddGraph();
+		unordered_map<int, int> VerticesIndex = GetIndexVerticesBack();
+		TopologicalSort(VerticesIndex);
+	}
+	else cout << "Error! No connected objects! Please try again!" << endl;
 }

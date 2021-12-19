@@ -17,12 +17,13 @@ class GTS
 {
 	unordered_map  <int, PIPE> pipes = {};
 	unordered_map  <int, KS> kss = {};
+	vector <vector<int>> ribs;
+	vector<vector<int>> AddGraph();
+	unordered_map<int, int> GetIndexVertices();
+	unordered_map<int, int> GetIndexVerticesBack();
+	void TopologicalSort(const unordered_map<int, int>&);
+
 public :
-	struct Connect
-	{
-		int pipeID, fromID, toID;
-	};
-	vector <Connect> Connection;
 	void InputPipe();
 	void InputKS();
 	void PrintAllPipes();
@@ -35,5 +36,8 @@ public :
 	void Filter_For_KS();
 	void DeletePipe();
 	void DeleteKS();
+	void ConnectPipeAndKSs();
+	void DisconnectPipeAndKSs();
+	void ShowConnection();
+	void Sort();
 };
-

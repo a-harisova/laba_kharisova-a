@@ -26,7 +26,7 @@ void PrintMenu()
 		 << "9. Delete KS" << endl
 		 << "10. Search" << endl
 		 << "11. Connection KSs with pipe" << endl
-		 << "12. Print all connections" << endl
+		 << "12. Topological sort" << endl
 		 << "0. Exit" << endl
 		 << "Choose action, please: ";
 }
@@ -117,6 +117,40 @@ int main()
 					}
 				}
 				break;
+			}
+			case 11:
+			{
+				cout << "What do you want to do?" << endl 
+					<< "Enter 1 if you want to connect pipe. " << endl 
+					<< "Enter 2 if you want to disconnect pipe. " << endl 
+					<< "Enter 3 if you want print links. " << endl;
+				switch (Get_Correct_Number(0, 3)) 
+				{
+					case 1: 
+					{
+						gts.ConnectPipeAndKSs();
+						break;
+					}
+					case 2: 
+					{
+						gts.DisconnectPipeAndKSs();
+						break;
+					}
+					case 3: 
+					{
+						gts.ShowConnection();
+						break;
+					}
+					default: 
+					{
+						cout << "Error! Please try again!" << endl;
+						break;
+					}
+				}
+			}
+			case 12:
+			{
+				gts.Sort();
 			}
 			case 0:
 			{

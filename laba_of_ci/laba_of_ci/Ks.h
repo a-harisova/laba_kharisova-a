@@ -14,8 +14,6 @@ public:
 	std::string name;
 	double efficiency;
 
-	std::set <int> ConnectedPIPE;
-
 	int GetID() const;
 	void SetID();
 	int GetNumbOfWorkshops() const;
@@ -23,6 +21,11 @@ public:
 	int GetNumbOfWorkWorkshops() const;
 	void SetNumbOfWorkWorkshops();
 	void Edit_KS();
+
+	bool link = false;
+	void Connect();
+	void BreakTheConnection();
+	bool Connection();
 
 	friend std::ostream& operator << (std::ostream& out, const KS& ks);
 	friend std::istream& operator >> (std::istream& in, KS& ks);
