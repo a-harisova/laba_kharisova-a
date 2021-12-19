@@ -307,7 +307,7 @@ void GTS::ConnectPipeAndKSs()
 		int pipeId = Get_Correct_Number(1u, pipes.size());
 		cout << "Please, enter the index of ks where the pipe enters: ";
 		int in = Get_Correct_Number(1u, kss.size());
-		cout << "Please, enter the index of ks where the pipe comes out: " << endl;
+		cout << "Please, enter the index of ks where the pipe comes out: ";
 		int out = Get_Correct_Number(1u, kss.size());
 		if (pipes[pipeId].in == 0 && pipes[pipeId].out == 0 && out != in) {
 			pipes[pipeId].Connect(in, out);

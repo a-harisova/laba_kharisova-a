@@ -147,10 +147,12 @@ int main()
 						break;
 					}
 				}
+				break;
 			}
 			case 12:
 			{
 				gts.Sort();
+				break;
 			}
 			case 0:
 			{
