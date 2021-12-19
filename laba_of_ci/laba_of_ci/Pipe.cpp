@@ -43,7 +43,7 @@ std::istream& operator >> (std::istream& in, PIPE& pipe)
 
 std::ofstream& operator << (std::ofstream& out, const PIPE& pipe)
 {
-	out << pipe.GetID() << endl
+	out << pipe.id << endl
 		<< pipe.name << endl
 		<< pipe.length << endl
 		<< pipe.diameter << endl
