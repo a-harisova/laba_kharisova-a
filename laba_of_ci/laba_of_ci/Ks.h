@@ -22,11 +22,6 @@ public:
 	void SetNumbOfWorkWorkshops();
 	void Edit_KS();
 
-	bool link = false;
-	void Connect();
-	void BreakTheConnection();
-	bool Connection();
-
 	friend std::ostream& operator << (std::ostream& out, const KS& ks);
 	friend std::istream& operator >> (std::istream& in, KS& ks);
 	friend std::ofstream& operator << (std::ofstream& out, const KS& ks);

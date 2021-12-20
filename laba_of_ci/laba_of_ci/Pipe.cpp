@@ -83,7 +83,7 @@ void PIPE::Connect(int myin, int myout)
 
 bool PIPE::CanBeUsed() const
 {
-	return in > 0 && out > 0 && repair == true;
+	return in > 0 && out > 0 && repair == false;
 }
 
 void PIPE::ShowTheConnection(int id) const

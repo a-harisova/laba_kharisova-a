@@ -39,8 +39,7 @@ std::ofstream& operator << (std::ofstream& out, const KS& ks)
 		<< ks.name << endl
 		<< ks.number_of_workshops << endl
 		<< ks.number_of_working_workshops << endl
-		<< ks.efficiency << endl
-		<< ks.link;
+		<< ks.efficiency << endl;
 	return out;
 }
 
@@ -51,7 +50,6 @@ std::ifstream& operator >> (std::ifstream& in, KS& ks)
 	in >> ks.number_of_workshops;
 	in >> ks.number_of_working_workshops;
 	in >> ks.efficiency;
-	in >> ks.link;
 	return in;
 }
 
@@ -121,20 +119,5 @@ void KS::Edit_KS()
 		Edit_KS();
 	}
 	}
-}
-
-void KS::Connect()
-{
-	if (!link) link = true;
-}
-
-void KS::BreakTheConnection()
-{
-	link = false;
-}
-
-bool KS::Connection()
-{
-	return link;
 }
 

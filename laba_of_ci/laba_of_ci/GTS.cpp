@@ -215,10 +215,10 @@ void GTS::DeleteKS()
 		cout << "Impossible to remove, since it hasn't yet been entered." << endl;
 }
 
-vector<vector<int>> GTS::AddGraph()
+vector <vector <int>> GTS::AddGraph()
 {
-	unordered_map<int, int> VerticesIndex = GetIndexVertices();
-	vector<vector<int>> ribs;
+	unordered_map <int, int> VerticesIndex = GetIndexVertices();
+	vector<vector <int>> ribs;
 	ribs.resize(VerticesIndex.size());
 	for (const auto& [i, p] : pipes)
 		if (p.CanBeUsed())
@@ -226,46 +226,51 @@ vector<vector<int>> GTS::AddGraph()
 	return ribs;
 }
 
-unordered_map<int, int> GTS::GetIndexVertices()
+unordered_map <int, int> GTS::GetIndexVertices()
 {
-	set<int> vertices;
+	set <int> vertices;
 	for (const auto& [i, p] : pipes)
-		if (p.CanBeUsed() && kss.count(p.in) && kss.count(p.out)) {
+		if (p.CanBeUsed() && kss.count(p.in) && kss.count(p.out)) 
+		{
 			vertices.insert(p.out);
 			vertices.insert(p.in);
 		}
-	unordered_map<int, int> VerticesIndex;
+	unordered_map <int, int> VerticesIndex;
 	int i = 0;
 	for (const int& v : vertices)
 		VerticesIndex.insert({ v, i++ });
 	return VerticesIndex;
 }
 
-unordered_map<int, int> GTS::GetIndexVerticesBack()
+unordered_map <int, int> GTS::GetIndexVerticesBack()
 {
-	set<int> vertices;
+	set <int> vertices;
 	for (const auto& [i, p] : pipes)
-		if (p.CanBeUsed() && kss.count(p.in) && kss.count(p.out)) {
+		if (p.CanBeUsed() && kss.count(p.in) && kss.count(p.out)) 
+		{
 			vertices.insert(p.out);
 			vertices.insert(p.in);
 		}
-	unordered_map<int, int> VerticesIndex;
+	unordered_map <int, int> VerticesIndex;
 	int i = 0;
 	for (const int& v : vertices)
 		VerticesIndex.insert({ i++, v });
 	return VerticesIndex;
 }
 
-void DepthFirstSearch(int v, vector<char>& cl, vector<int>& p, int& start, const vector<vector<int>>& ribs, vector<int>& result)
+void DepthFirstSearch(int v, vector <char>& cl, vector <int>& p, int& start, const vector <vector <int>>& ribs, vector <int>& result)
 {
 	cl[v] = 1;
-	for (size_t i = 0; i < ribs[v].size(); ++i) {
+	for (size_t i = 0; i < ribs[v].size(); ++i) 
+	{
 		int to = ribs[v][i];
-		if (cl[to] == 0) {
+		if (cl[to] == 0) 
+		{
 			p[to] = v;
 			DepthFirstSearch(to, cl, p, start, ribs, result);
 		}
-		else if (cl[to] == 1) {
+		else if (cl[to] == 1) 
+		{
 			start = to;
 			return;
 		}
@@ -274,12 +279,12 @@ void DepthFirstSearch(int v, vector<char>& cl, vector<int>& p, int& start, const
 	cl[v] = 2;
 }
 
-void GTS::TopologicalSort(const unordered_map<int, int>& VerticesIndex)
+void GTS::TopologicalSort(const unordered_map <int, int>& VerticesIndex)
 {
 	int n = ribs.size();
-	vector<int> result;
-	vector<char> cl;
-	vector<int> p;
+	vector <int> result;
+	vector <char> cl;
+	vector <int> p;
 	int cycle_start;
 	p.assign(n, -1);
 	cl.assign(n, 0);
@@ -290,8 +295,9 @@ void GTS::TopologicalSort(const unordered_map<int, int>& VerticesIndex)
 			DepthFirstSearch(i, cl, p, cycle_start, ribs, result);
 	if (cycle_start == -1) {
 		reverse(result.begin(), result.end());
-		for (int i = 0; i < result.size(); i++) {
-			cout << " Station " << VerticesIndex.at(result[i]) << " -> ";
+		for (int i = 0; i < result.size(); i++) 
+		{
+			cout << " KS's index: " << VerticesIndex.at(result[i]) << " --> ";
 		}
 		cout << endl;
 	}
@@ -309,10 +315,9 @@ void GTS::ConnectPipeAndKSs()
 		int in = Get_Correct_Number(1u, kss.size());
 		cout << "Please, enter the index of ks where the pipe comes out: ";
 		int out = Get_Correct_Number(1u, kss.size());
-		if (pipes[pipeId].in == 0 && pipes[pipeId].out == 0 && out != in) {
+		if (pipes[pipeId].in == 0 && pipes[pipeId].out == 0 && out != in) 
+		{
 			pipes[pipeId].Connect(in, out);
-			kss[in].Connect();
-			kss[out].Connect();
 		}
 		else
 			cout << "Error! Please try again!" << endl;
@@ -330,9 +335,9 @@ void GTS::DisconnectPipeAndKSs()
 		int pipeId = Get_Correct_Number(1u, pipes.size());
 		if (pipes[pipeId].Connection()) {
 			pipes[pipeId].BreakTheConnection();
-			kss[pipes[pipeId].in].BreakTheConnection();
-			kss[pipes[pipeId].out].BreakTheConnection();
 		}
+		else
+			cout << "Error! No objects to disconnect! Please try again!" << endl;
 	}
 	else
 		cout << "Error! No objects to disconnect! Please try again!" << endl;
@@ -352,10 +357,18 @@ void GTS::ShowConnection()
 
 void GTS::Sort()
 {
-	if (pipes.size() > 0 && kss.size() > 1) {
+	if (pipes.size() > 0 && kss.size() > 1) 
+	{
 		ribs = AddGraph();
-		unordered_map<int, int> VerticesIndex = GetIndexVerticesBack();
-		TopologicalSort(VerticesIndex);
+		if (ribs.size() == 0)
+		{
+			cout << "Error! No connected objects! Please try again!" << endl;
+		}
+		else
+		{
+			unordered_map <int, int> VerticesIndex = GetIndexVerticesBack();
+			TopologicalSort(VerticesIndex);
+		}
 	}
 	else cout << "Error! No connected objects! Please try again!" << endl;
 }
