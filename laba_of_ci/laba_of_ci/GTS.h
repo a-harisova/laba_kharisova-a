@@ -27,7 +27,9 @@ class GTS
 	unordered_map <int, int> IndexVerticesBack();
 	vector <vector <double>> MatrixWeights();
 	vector <vector <int>> MatrixThroughput();
-	void TopologicalSort(const unordered_map<int, int>&);
+	void TopologicalSort(const unordered_map<int, int>& IndexVertices);
+	void MaxStream();
+	void ShortestWay(const unordered_map<int, int>& VerticesIndexForOutput);
 
 public :
 	void InputPipe();

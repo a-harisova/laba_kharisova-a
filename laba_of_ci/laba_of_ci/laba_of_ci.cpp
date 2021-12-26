@@ -156,38 +156,7 @@ int main()
 			}
 			case 12:
 			{
-				cout << "What do you want to do?" << endl
-					<< "Enter 1 if you want to do topological sort. " << endl
-					<< "Enter 2 if you want to find max stream. " << endl
-					<< "Enter 3 if you want to find the shortest path. " << endl
-					<< "Enter 0 if you want to exit." << endl;
-				switch (Get_Correct_Number(0, 3))
-				{
-					case 1:
-					{
-						gts.Sort();
-						break;
-					}
-					case 2:
-					{
-						
-						break;
-					}
-					case 3:
-					{
-						
-						break;
-					}
-					case 0:
-					{
-						break;
-					}
-					default:
-					{
-						cout << "Error! Please try again!" << endl;
-						break;
-					}
-				}
+				gts.Sort();
 				break;
 			}
 			case 0:

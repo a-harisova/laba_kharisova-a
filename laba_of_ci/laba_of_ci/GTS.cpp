@@ -366,8 +366,40 @@ void GTS::Sort()
 		}
 		else
 		{
-			unordered_map <int, int> VerticesIndex = IndexVerticesBack();
-			TopologicalSort(VerticesIndex);
+			cout << "What do you want to do?" << endl
+				<< "Enter 1 if you want to do topological sort. " << endl
+				<< "Enter 2 if you want to find max stream. " << endl
+				<< "Enter 3 if you want to find the shortest way. " << endl
+				<< "Enter 0 if you want to exit." << endl;
+			switch (Get_Correct_Number(0, 3))
+			{
+				case 1:
+				{
+					unordered_map <int, int> VerticesIndex = IndexVerticesBack();
+					TopologicalSort(VerticesIndex);
+					break;
+				}
+				case 2:
+				{
+					MaxStream();
+					break;
+				}
+				case 3:
+				{
+					unordered_map <int, int> VerticesIndex = IndexVerticesBack();
+					ShortestWay(VerticesIndex);
+					break;
+				}
+				case 0:
+				{
+					break;
+				}
+				default:
+				{
+					cout << "Error! Please try again!" << endl;
+					break;
+				}
+			}
 		}
 	}
 	else cout << "Error! No connected objects! Please try again!" << endl;
@@ -402,3 +434,90 @@ vector <vector <int>> GTS::MatrixThroughput()
 	return thro;
 }
 
+void GTS::MaxStream()
+{
+	int start, end;
+	cout << "Please enter index of KS from which to start the search for the maximum stream: ";
+	start = Get_Correct_Number(1u, kss.size());
+	cout << "Please enter index of KS from which to end the search for the maximum stream: ";
+	end = Get_Correct_Number(1u, kss.size());
+	int n = throughput.size();
+	vector <vector <int>> thr = throughput;
+	double MaxStream = 0;
+	while (true) 
+	{ 
+		vector <int> parent (n, -1);
+		vector <bool> used (n, true);
+		queue <int> q;
+		used[start] = false;
+		q.push(start);
+		while (!q.empty()) 
+		{
+			int v = q.front();
+			q.pop();
+			for (int i = 0; i < n; i++) 
+			{
+				if (!used[i] && thr[v][i] > 0) 
+				{
+					parent[i] = v;
+					used[i] = true;
+					q.push(i);
+				}
+			}
+		}
+		if (!used[end])
+			break;
+		int DopStream = INT_MAX;
+		int ptr = end;
+		while (ptr != start) 
+		{
+			DopStream = min(DopStream, thr[parent[ptr]][ptr]);
+			ptr = parent[ptr];
+		}
+		ptr = end;
+		while (ptr != start) 
+		{
+			thr[parent[ptr]][ptr] -= DopStream;
+			thr[ptr][parent[ptr]] += DopStream;
+			ptr = parent[ptr];
+		}
+		MaxStream += DopStream;
+	}
+	cout << "Maz stream = " << MaxStream << endl;
+}
+
+void GTS::ShortestWay(const unordered_map<int, int>& IndexVerticesBack)
+{
+	int start, end;
+	cout << "Please enter index of KS from which to start the search for the shortest way: ";
+	start = Get_Correct_Number(1u, kss.size());
+	cout << "Please enter index of KS from which to end the search for the shortest way: ";
+	end = Get_Correct_Number(1u, kss.size());
+	vector <vector <double>> w = weight;
+	int n = w.size();
+	vector <vector <int>> restore;
+	restore.resize(n);
+	for (int i = 0; i < n; i++)
+		for (int t = 0; t < n; t++)
+			restore[i].push_back(t);
+	for (int k = 0; k < n; k++)
+		for (int i = 0; i < n; i++)
+			for (int j = 0; j < n; j++)
+				if (w[i][j] > w[i][k] + w[k][j]) 
+				{
+					w[i][j] = w[i][k] + w[k][j];
+					restore[i][j] = restore[i][k];
+				}
+	if (w[start][end] == INT_MAX) 
+	{
+		cout << "There is no way" << endl;
+		return;
+	}
+	cout << "Way from KS " << start << " to the KS " << end << " = " << w[start][end] << endl << "This way is: " << endl;
+	int temp = start;
+	while (temp != end) {
+		cout << IndexVerticesBack.at(temp) << " -> ";
+		temp = restore[temp][end];
+	}
+	cout << IndexVerticesBack.at(end) << endl;
+}
