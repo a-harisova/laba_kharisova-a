@@ -217,7 +217,7 @@ void GTS::DeleteKS()
 
 vector <vector <int>> GTS::AddGraph()
 {
-	unordered_map <int, int> VerticesIndex = GetIndexVertices();
+	unordered_map <int, int> VerticesIndex = IndexVertices();
 	vector <vector <int>> ribs;
 	ribs.resize(VerticesIndex.size());
 	for (const auto& [i, p] : pipes)
@@ -226,7 +226,7 @@ vector <vector <int>> GTS::AddGraph()
 	return ribs;
 }
 
-unordered_map <int, int> GTS::GetIndexVertices()
+unordered_map <int, int> GTS::IndexVertices()
 {
 	set <int> vertices;
 	for (const auto& [i, p] : pipes)
@@ -242,7 +242,7 @@ unordered_map <int, int> GTS::GetIndexVertices()
 	return VerticesIndex;
 }
 
-unordered_map <int, int> GTS::GetIndexVerticesBack()
+unordered_map <int, int> GTS::IndexVerticesBack()
 {
 	set <int> vertices;
 	for (const auto& [i, p] : pipes)
@@ -366,10 +366,39 @@ void GTS::Sort()
 		}
 		else
 		{
-			unordered_map <int, int> VerticesIndex = GetIndexVerticesBack();
+			unordered_map <int, int> VerticesIndex = IndexVerticesBack();
 			TopologicalSort(VerticesIndex);
 		}
 	}
 	else cout << "Error! No connected objects! Please try again!" << endl;
+}
+
+vector <vector <double>> GTS::MatrixWeights() 
+{
+	vector <vector <double>> weights;
+	unordered_map <int, int> VerticesIndex = IndexVertices();
+	weights.assign(VerticesIndex.size(), {});
+	for (int i = 1; i < VerticesIndex.size(); i++) 
+	{
+		weights[i].assign(VerticesIndex.size(), INT_MAX);
+		weights[i][i] = 0;
+	}
+	for (const auto& [i, p] : pipes)
+		if (p.CanBeUsed())
+			weights[VerticesIndex[p.out]][VerticesIndex[p.in]] = p.length;
+	return weights;
+}
+
+vector <vector <int>> GTS::MatrixThroughput() 
+{
+	vector <vector <int>> thro;
+	unordered_map <int, int> VerticesIndex = IndexVertices();
+	thro.assign(VerticesIndex.size(), {});
+	for (int i = 1; i < VerticesIndex.size(); i++)
+		thro[i].assign(VerticesIndex.size(), 0);
+	for (const auto& [i, p] : pipes)
+		if (p.CanBeUsed())
+			thro[VerticesIndex[p.out]][VerticesIndex[p.in]] = p.performance;
+	return thro;
 }
 
