@@ -26,7 +26,7 @@ void PrintMenu()
 		 << "9. Delete KS" << endl
 		 << "10. Search" << endl
 		 << "11. Connection KSs with pipe" << endl
-		 << "12. Topological sort" << endl
+		 << "12. Graph operations" << endl
 		 << "0. Exit" << endl
 		 << "Choose action, please: ";
 }
@@ -123,7 +123,8 @@ int main()
 				cout << "What do you want to do?" << endl 
 					<< "Enter 1 if you want to connect pipe. " << endl 
 					<< "Enter 2 if you want to disconnect pipe. " << endl 
-					<< "Enter 3 if you want print links. " << endl;
+					<< "Enter 3 if you want print links. " << endl
+					<< "Enter 0 if you want to exit."<< endl;
 				switch (Get_Correct_Number(0, 3)) 
 				{
 					case 1: 
@@ -141,6 +142,10 @@ int main()
 						gts.ShowConnection();
 						break;
 					}
+					case 0:
+					{
+						break;
+					}
 					default: 
 					{
 						cout << "Error! Please try again!" << endl;
@@ -151,7 +156,38 @@ int main()
 			}
 			case 12:
 			{
-				gts.Sort();
+				cout << "What do you want to do?" << endl
+					<< "Enter 1 if you want to do topological sort. " << endl
+					<< "Enter 2 if you want to find max stream. " << endl
+					<< "Enter 3 if you want to find the shortest path. " << endl
+					<< "Enter 0 if you want to exit." << endl;
+				switch (Get_Correct_Number(0, 3))
+				{
+					case 1:
+					{
+						gts.Sort();
+						break;
+					}
+					case 2:
+					{
+						
+						break;
+					}
+					case 3:
+					{
+						
+						break;
+					}
+					case 0:
+					{
+						break;
+					}
+					default:
+					{
+						cout << "Error! Please try again!" << endl;
+						break;
+					}
+				}
 				break;
 			}
 			case 0:

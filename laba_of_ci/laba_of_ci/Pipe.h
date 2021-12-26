@@ -12,6 +12,7 @@ public:
 	double length;
 	int diameter;
 	bool repair;
+	int performance;
 
 	int GetID() const;
 	void SetID();

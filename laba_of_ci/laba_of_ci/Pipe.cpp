@@ -20,7 +20,8 @@ std::ostream& operator << (std::ostream& out, const PIPE& pipe)
 		<< "ID = " << pipe.id << endl
 		<< "Name = " << pipe.name << endl
 		<< "Length = " << pipe.length << endl
-		<< "Diameter = " << pipe.diameter << endl;
+		<< "Diameter = " << pipe.diameter << endl
+		<< "Performance = " << pipe.performance << endl;
 	if (pipe.repair)
 		out << "Repairs needed - yes" << endl;
 	else out << "Repairs needed - no" << endl;
@@ -39,6 +40,7 @@ std::istream& operator >> (std::istream& in, PIPE& pipe)
 	cout << "What is the diameter of the pipe? Please enter an integer value: ";
 	pipe.diameter = Get_Correct_Number(0, 1000000);
 	pipe.repair = false;
+	pipe.performance = round(sqrt(pow(pipe.diameter, 5) / pipe.length)); 
 	return in;
 }
 

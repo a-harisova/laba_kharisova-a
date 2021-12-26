@@ -218,7 +218,7 @@ void GTS::DeleteKS()
 vector <vector <int>> GTS::AddGraph()
 {
 	unordered_map <int, int> VerticesIndex = GetIndexVertices();
-	vector<vector <int>> ribs;
+	vector <vector <int>> ribs;
 	ribs.resize(VerticesIndex.size());
 	for (const auto& [i, p] : pipes)
 		if (p.CanBeUsed())
@@ -372,3 +372,4 @@ void GTS::Sort()
 	}
 	else cout << "Error! No connected objects! Please try again!" << endl;
 }
+

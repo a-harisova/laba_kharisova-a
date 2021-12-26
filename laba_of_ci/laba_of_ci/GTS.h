@@ -6,6 +6,7 @@
 #include <iostream>
 #include <map>
 #include <unordered_set>
+#include <queue>
 #include "Pipe.h"
 #include "Ks.h"
 #include "Utils.h"
@@ -17,12 +18,14 @@ class GTS
 {
 	unordered_map  <int, PIPE> pipes = {};
 	unordered_map  <int, KS> kss = {};
-	vector <vector<int>> ribs;
-	vector<vector<int>> AddGraph();
-	unordered_map<int, int> GetIndexVertices();
-	unordered_map<int, int> GetIndexVerticesBack();
-	void TopologicalSort(const unordered_map<int, int>&);
+	vector <vector <int>> ribs;
+	vector <vector <double>> weight;
+	vector <vector <int>> throughput;
 
+	vector <vector <int>> AddGraph();
+	unordered_map <int, int> GetIndexVertices();
+	unordered_map <int, int> GetIndexVerticesBack();
+	
 public :
 	void InputPipe();
 	void InputKS();
