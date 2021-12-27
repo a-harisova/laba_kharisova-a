@@ -48,4 +48,5 @@ public :
 	void DisconnectPipeAndKSs();
 	void ShowConnection();
 	void Sort();
+	bool IsKSConnected(int KSId);
 };

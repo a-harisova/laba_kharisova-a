@@ -209,7 +209,12 @@ void GTS::DeleteKS()
 	{
 		cout << "Please, enter the index(1 - " << kss.size() << "): ";
 		int index = Get_Correct_Number(1u, kss.size());
-		kss.erase(index);
+		if (!IsKSConnected(index))
+		{
+			kss.erase(index);
+		}
+		else
+			cout << "Error! Please disconnect!" << endl;
 	}
 	else
 		cout << "Impossible to remove, since it hasn't yet been entered." << endl;
@@ -404,6 +409,16 @@ void GTS::Sort()
 		}
 	}
 	else cout << "Error! No connected objects! Please try again!" << endl;
+}
+
+bool GTS::IsKSConnected(int KSId)
+{
+	for (auto& [id, p] : pipes)
+	{
+		if (p.in == KSId || p.out == KSId)
+			return true;
+	}
+	return false;
 }
 
 vector <vector <double>> GTS::MatrixWeights() 
