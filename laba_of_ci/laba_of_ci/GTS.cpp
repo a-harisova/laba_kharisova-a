@@ -381,13 +381,11 @@ void GTS::Sort()
 				case 2:
 				{
 					throughput = MatrixThroughput();
-					weight = MatrixWeights();
 					MaxStream();
 					break;
 				}
 				case 3:
 				{
-					throughput = MatrixThroughput();
 					weight = MatrixWeights();
 					unordered_map <int, int> VerticesIndex = VertexIndicesBack();
 					ShortestWay(VerticesIndex);
@@ -410,31 +408,31 @@ void GTS::Sort()
 
 vector <vector <double>> GTS::MatrixWeights() 
 {
-	vector <vector <double>> weights;
+	vector <vector <double>> w;
 	unordered_map <int, int> VerticesIndex = VertexIndices();
-	weights.assign(VerticesIndex.size(), {});
-	for (int i = 1; i < VerticesIndex.size(); i++) 
+	w.assign(VerticesIndex.size(), {});
+	for (int i = 0; i < VerticesIndex.size(); i++) 
 	{
-		weights[i].assign(VerticesIndex.size(), INT_MAX);
-		weights[i][i] = 0;
+		w[i].assign(VerticesIndex.size(), INT_MAX);
+		w[i][i] = 0;
 	}
 	for (const auto& [i, p] : pipes)
 		if (p.CanBeUsed())
-			weights[VerticesIndex[p.out]][VerticesIndex[p.in]] = p.length;
-	return weights;
+			w[VerticesIndex[p.out]][VerticesIndex[p.in]] = p.length;
+	return w;
 }
 
 vector <vector <int>> GTS::MatrixThroughput() 
 {
-	vector <vector <int>> thro;
+	vector <vector <int>> thr;
 	unordered_map <int, int> VerticesIndex = VertexIndices();
-	thro.assign(VerticesIndex.size(), {});
-	for (int i = 1; i < VerticesIndex.size(); i++)
-		thro[i].assign(VerticesIndex.size(), 0);
+	thr.assign(VerticesIndex.size(), {});
+	for (int i = 0; i < VerticesIndex.size(); i++)
+		thr[i].assign(VerticesIndex.size(), 0);
 	for (const auto& [i, p] : pipes)
 		if (p.CanBeUsed())
-			thro[VerticesIndex[p.out]][VerticesIndex[p.in]] = p.performance;
-	return thro;
+			thr[VerticesIndex[p.out]][VerticesIndex[p.in]] = p.performance;
+	return thr;
 }
 
 void GTS::MaxStream()
@@ -442,11 +440,13 @@ void GTS::MaxStream()
 	int start, end;
 	cout << "Please enter index of KS from which to start the search for the maximum stream: ";
 	start = Get_Correct_Number(1u, kss.size());
+	start--;
 	cout << "Please enter index of KS from which to end the search for the maximum stream: ";
 	end = Get_Correct_Number(1u, kss.size());
+	end--;
 	int n = throughput.size();
 	vector <vector <int>> thr = throughput;
-	double MaxStream = 0;
+	int MaxStream = 0;
 	while (true) 
 	{ 
 		vector <int> parent (n, -1);
@@ -458,7 +458,7 @@ void GTS::MaxStream()
 		{
 			int v = q.front();
 			q.pop();
-			for (int i = 0; i < n; i++) 
+			for (int i = 0; i < n ; i++) 
 			{
 				if (!used[i] && thr[v][i] > 0) 
 				{
@@ -486,7 +486,7 @@ void GTS::MaxStream()
 		}
 		MaxStream += DopStream;
 	}
-	cout << "Maz stream = " << MaxStream << endl;
+	cout << "Max stream = " << MaxStream << endl;
 }
 
 void GTS::ShortestWay(const unordered_map<int, int>& IndexVerticesBack)
@@ -494,8 +494,10 @@ void GTS::ShortestWay(const unordered_map<int, int>& IndexVerticesBack)
 	int start, end;
 	cout << "Please enter index of KS from which to start the search for the shortest way: ";
 	start = Get_Correct_Number(1u, kss.size());
+	start--;
 	cout << "Please enter index of KS from which to end the search for the shortest way: ";
 	end = Get_Correct_Number(1u, kss.size());
+	end--;
 	vector <vector <double>> w = weight;
 	int n = w.size();
 	vector <vector <int>> restore;
@@ -516,7 +518,7 @@ void GTS::ShortestWay(const unordered_map<int, int>& IndexVerticesBack)
 		cout << "There is no way" << endl;
 		return;
 	}
-	cout << "Way from KS " << start << " to the KS " << end << " = " << w[start][end] << endl << "This way is: " << endl;
+	cout << "Way from KS " << IndexVerticesBack.at(start) << " to the KS " << IndexVerticesBack.at(end) << " = " << w[start][end] << endl << "This way is: " << endl;
 	int temp = start;
 	while (temp != end) {
 		cout << IndexVerticesBack.at(temp) << " -> ";
