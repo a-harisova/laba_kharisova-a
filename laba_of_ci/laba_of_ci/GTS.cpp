@@ -217,7 +217,7 @@ void GTS::DeleteKS()
 
 vector <vector <int>> GTS::AddGraph()
 {
-	unordered_map <int, int> VerticesIndex = IndexVertices();
+	unordered_map <int, int> VerticesIndex = VertexIndices();
 	vector <vector <int>> ribs;
 	ribs.resize(VerticesIndex.size());
 	for (const auto& [i, p] : pipes)
@@ -226,7 +226,7 @@ vector <vector <int>> GTS::AddGraph()
 	return ribs;
 }
 
-unordered_map <int, int> GTS::IndexVertices()
+unordered_map <int, int> GTS::VertexIndices()
 {
 	set <int> vertices;
 	for (const auto& [i, p] : pipes)
@@ -242,7 +242,7 @@ unordered_map <int, int> GTS::IndexVertices()
 	return VerticesIndex;
 }
 
-unordered_map <int, int> GTS::IndexVerticesBack()
+unordered_map <int, int> GTS::VertexIndicesBack()
 {
 	set <int> vertices;
 	for (const auto& [i, p] : pipes)
@@ -258,48 +258,47 @@ unordered_map <int, int> GTS::IndexVerticesBack()
 	return VerticesIndex;
 }
 
-void DepthFirstSearch(int v, vector <char>& cl, vector <int>& p, int& start, const vector <vector <int>>& ribs, vector <int>& result)
+void DepthFirstSearch(int vertex, vector <int>& visited, vector <int>& p, int& start, const vector <vector <int>>& ribs, vector <int>& result)
 {
-	cl[v] = 1;
-	for (size_t i = 0; i < ribs[v].size(); ++i) 
+	visited[vertex] = 1;
+	for (size_t i = 0; i < ribs[vertex].size(); ++i) 
 	{
-		int to = ribs[v][i];
-		if (cl[to] == 0) 
+		int to = ribs[vertex][i];
+		if (visited[to] == 0)
 		{
-			p[to] = v;
-			DepthFirstSearch(to, cl, p, start, ribs, result);
+			p[to] = vertex;
+			DepthFirstSearch(to, visited, p, start, ribs, result);
 		}
-		else if (cl[to] == 1) 
+		else if (visited[to] == 1)
 		{
 			start = to;
 			return;
 		}
 	}
-	result.push_back(v);
-	cl[v] = 2;
+	result.push_back(vertex);
+	visited[vertex] = 2;
 }
 
 void GTS::TopologicalSort(const unordered_map <int, int>& VerticesIndex)
 {
 	int n = ribs.size();
 	vector <int> result;
-	vector <char> cl;
+	vector <int> cl;
 	vector <int> p;
-	int cycle_start;
+	int start;
 	p.assign(n, -1);
 	cl.assign(n, 0);
-	cycle_start = -1;
+	start = -1;
 	result.clear();
 	for (int i = 0; i < n; ++i)
 		if (cl[i] != 2)
-			DepthFirstSearch(i, cl, p, cycle_start, ribs, result);
-	if (cycle_start == -1) {
-		reverse(result.begin(), result.end());
+			DepthFirstSearch(i, cl, p, start, ribs, result);
+	if (start == -1) 
+	{
 		for (int i = 0; i < result.size(); i++) 
 		{
-			cout << " KS's index: " << VerticesIndex.at(result[i]) << " --> ";
+			cout << " KS's index: " << VerticesIndex.at(result[i]) << endl;
 		}
-		cout << endl;
 	}
 	else
 		cout << "Sorting cannot be applied to a graph containing a cycle " << endl;
@@ -375,18 +374,22 @@ void GTS::Sort()
 			{
 				case 1:
 				{
-					unordered_map <int, int> VerticesIndex = IndexVerticesBack();
+					unordered_map <int, int> VerticesIndex = VertexIndicesBack();
 					TopologicalSort(VerticesIndex);
 					break;
 				}
 				case 2:
 				{
+					throughput = MatrixThroughput();
+					weight = MatrixWeights();
 					MaxStream();
 					break;
 				}
 				case 3:
 				{
-					unordered_map <int, int> VerticesIndex = IndexVerticesBack();
+					throughput = MatrixThroughput();
+					weight = MatrixWeights();
+					unordered_map <int, int> VerticesIndex = VertexIndicesBack();
 					ShortestWay(VerticesIndex);
 					break;
 				}
@@ -408,7 +411,7 @@ void GTS::Sort()
 vector <vector <double>> GTS::MatrixWeights() 
 {
 	vector <vector <double>> weights;
-	unordered_map <int, int> VerticesIndex = IndexVertices();
+	unordered_map <int, int> VerticesIndex = VertexIndices();
 	weights.assign(VerticesIndex.size(), {});
 	for (int i = 1; i < VerticesIndex.size(); i++) 
 	{
@@ -424,7 +427,7 @@ vector <vector <double>> GTS::MatrixWeights()
 vector <vector <int>> GTS::MatrixThroughput() 
 {
 	vector <vector <int>> thro;
-	unordered_map <int, int> VerticesIndex = IndexVertices();
+	unordered_map <int, int> VerticesIndex = VertexIndices();
 	thro.assign(VerticesIndex.size(), {});
 	for (int i = 1; i < VerticesIndex.size(); i++)
 		thro[i].assign(VerticesIndex.size(), 0);
@@ -447,9 +450,9 @@ void GTS::MaxStream()
 	while (true) 
 	{ 
 		vector <int> parent (n, -1);
-		vector <bool> used (n, true);
+		vector <bool> used (n, false);
 		queue <int> q;
-		used[start] = false;
+		used[start] = true;
 		q.push(start);
 		while (!q.empty()) 
 		{

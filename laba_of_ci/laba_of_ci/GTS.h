@@ -23,8 +23,8 @@ class GTS
 	vector <vector <int>> throughput;
 
 	vector <vector <int>> AddGraph();
-	unordered_map <int, int> IndexVertices();
-	unordered_map <int, int> IndexVerticesBack();
+	unordered_map <int, int> VertexIndices();
+	unordered_map <int, int> VertexIndicesBack();
 	vector <vector <double>> MatrixWeights();
 	vector <vector <int>> MatrixThroughput();
 	void TopologicalSort(const unordered_map<int, int>& IndexVertices);

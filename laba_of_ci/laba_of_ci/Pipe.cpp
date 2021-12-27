@@ -65,6 +65,7 @@ std::ifstream& operator >> (std::ifstream& in, PIPE& pipe)
 	in >> pipe.repair;
 	in >> pipe.in;
 	in >> pipe.out;
+	pipe.performance = round(sqrt(pow(pipe.diameter, 5) / pipe.length));
 	return in;
 }
 
